@@ -1,6 +1,20 @@
 // ==========================================================================
 // CLIENT ENGINE WITH ADVANCED ADMIN API INTEGRATION & GSAP ANIMATION CONTROL
 // ==========================================================================
+// Globally wrap fetch to handle alternative ports and file:// protocol
+(function() {
+    const originalFetch = window.fetch;
+    window.fetch = function(url, options) {
+        let finalUrl = url;
+        const currentPort = window.location.port;
+        const isFileProtocol = window.location.protocol === 'file:';
+        if (typeof url === 'string' && url.startsWith('/api') && (isFileProtocol || (currentPort && currentPort !== "3000"))) {
+            finalUrl = `http://localhost:3000${url}`;
+        }
+        return originalFetch(finalUrl, options);
+    };
+})();
+
 class KPISystem {
     constructor() {
         this.token = localStorage.getItem("bia_dm_token") || null;
