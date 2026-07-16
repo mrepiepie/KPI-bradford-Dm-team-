@@ -676,10 +676,12 @@ class KPISystem {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
+                        display: true,
                         position: 'bottom',
                         labels: {
-                            font: { family: 'Plus Jakarta Sans', size: 12 },
-                            color: '#888681'
+                            font: { family: 'Inter', size: 14, weight: '500' },
+                            color: '#e6e3dd', /* High-contrast ivory */
+                            padding: 20
                         }
                     }
                 },
