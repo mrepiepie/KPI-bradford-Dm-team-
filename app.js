@@ -37,8 +37,11 @@ class KPISystem {
         const yearMonth = todayStr.substring(0, 7);
         document.getElementById("monthly-report-month").value = yearMonth;
 
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById("kpi-date-label").innerText = `Date: ${new Date().toLocaleDateString("en-US", options)}`;
+        const dateLabel = document.getElementById("kpi-date-label");
+        if (dateLabel) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateLabel.innerText = `Date: ${new Date().toLocaleDateString("en-US", options)}`;
+        }
     }
 
     setupEventListeners() {

@@ -862,7 +862,7 @@ body.admin-mode .kpi-table tbody tr:hover {
 
 .login-card-unified {
     width: 100%;
-    max-width: 540px; /* Increased size for spacing */
+    max-width: 460px; /* Reduced to fit screen boundaries beautifully */
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 16px; /* Modern rounded corners */
@@ -879,7 +879,7 @@ body.admin-mode .kpi-table tbody tr:hover {
 .login-card-showcase {
     background: radial-gradient(circle at top right, rgba(217, 70, 239, 0.05), transparent 70%), #161615;
     border-bottom: 1px solid var(--border-color);
-    padding: 40px;
+    padding: 24px; /* Reduced from 40px */
 }
 
 .showcase-tag {
@@ -891,12 +891,12 @@ body.admin-mode .kpi-table tbody tr:hover {
 }
 
 .login-card-showcase h2 {
-    font-size: 30px; /* Big bold readable heading */
-    line-height: 1.2;
+    font-size: 20px; /* Scaled down from 30px */
+    line-height: 1.3;
     font-weight: 800;
     text-transform: uppercase;
     color: var(--text-primary);
-    margin: 20px 0;
+    margin: 10px 0; /* Reduced from 20px */
     letter-spacing: -0.02em;
 }
 
@@ -911,7 +911,7 @@ body.admin-mode .kpi-table tbody tr:hover {
 }
 
 .login-card-form-wrapper {
-    padding: 44px;
+    padding: 28px; /* Reduced from 44px */
 }
 
 /* HIGH-CONTRAST DARK STAT BOXES */
