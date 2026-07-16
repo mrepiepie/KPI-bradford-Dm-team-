@@ -16,29 +16,54 @@ const USERS_FILE = path.join(__dirname, 'data', 'users.json');
 const SUBMISSIONS_FILE = path.join(__dirname, 'data', 'submissions.json');
 const CONFIGS_FILE = path.join(__dirname, 'data', 'kpi_configs.json');
 
-// Helper functions for file reading/writing
+// ----------------------------------------------------------------
+// In-memory data store — loaded once at startup.
+// On Vercel (read-only FS), writes are kept in memory for the
+// lifetime of the serverless function instance. On a local server
+// the files are also written to disk for full persistence.
+// ----------------------------------------------------------------
+let _usersCache = null;
+let _submissionsCache = null;
+let _configsCache = null;
+
 function readUsers() {
-    return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+    if (!_usersCache) {
+        _usersCache = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+    }
+    return _usersCache;
 }
 
 function writeUsers(data) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2), 'utf8');
+    _usersCache = data;
+    try { fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2), 'utf8'); } catch (e) { /* read-only FS on Vercel */ }
 }
 
 function readSubmissions() {
-    return JSON.parse(fs.readFileSync(SUBMISSIONS_FILE, 'utf8'));
+    if (!_submissionsCache) {
+        try {
+            _submissionsCache = JSON.parse(fs.readFileSync(SUBMISSIONS_FILE, 'utf8'));
+        } catch (e) {
+            _submissionsCache = {};
+        }
+    }
+    return _submissionsCache;
 }
 
 function writeSubmissions(data) {
-    fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify(data, null, 2), 'utf8');
+    _submissionsCache = data;
+    try { fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify(data, null, 2), 'utf8'); } catch (e) { /* read-only FS on Vercel */ }
 }
 
 function readConfigs() {
-    return JSON.parse(fs.readFileSync(CONFIGS_FILE, 'utf8'));
+    if (!_configsCache) {
+        _configsCache = JSON.parse(fs.readFileSync(CONFIGS_FILE, 'utf8'));
+    }
+    return _configsCache;
 }
 
 function writeConfigs(data) {
-    fs.writeFileSync(CONFIGS_FILE, JSON.stringify(data, null, 2), 'utf8');
+    _configsCache = data;
+    try { fs.writeFileSync(CONFIGS_FILE, JSON.stringify(data, null, 2), 'utf8'); } catch (e) { /* read-only FS on Vercel */ }
 }
 
 // Authentication Middleware
@@ -590,10 +615,14 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`====================================================`);
-    console.log(`Bradford KPI Development Server Live`);
-    console.log(`Local Host: http://localhost:${PORT}`);
-    console.log(`====================================================`);
-});
+// Export for Vercel serverless — also start locally when run directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`====================================================`);
+        console.log(`Bradford KPI Development Server Live`);
+        console.log(`Local Host: http://localhost:${PORT}`);
+        console.log(`====================================================`);
+    });
+}
+
+module.exports = app;
