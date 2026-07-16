@@ -5,20 +5,17 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": [
-          "index.html",
-          "style.css",
-          "app.js",
-          "assets/**",
-          "data/**"
-        ]
+        "includeFiles": ["data/**"]
       }
-    }
+    },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "style.css", "use": "@vercel/static" },
+    { "src": "app.js", "use": "@vercel/static" },
+    { "src": "assets/**", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/server.js"
-    }
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
