@@ -249,7 +249,8 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, (req, res) => {
         id: users[email].id,
         name: users[email].name,
         role: users[email].role,
-        specialization: users[email].specialization
+        specialization: users[email].specialization,
+        password: users[email].password /* Allow admin to retrieve passwords if student forgets */
     }));
     res.json(userList);
 });

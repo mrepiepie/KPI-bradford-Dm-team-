@@ -835,14 +835,15 @@ class KPISystem {
                 tr.innerHTML = `
                     <td>
                         <strong>${u.name}</strong><br>
-                        <span style="color:var(--text-muted); font-size:11px;">${u.email}</span>
+                        <span style="color:var(--text-muted); font-size:12px;">${u.email}</span><br>
+                        <span style="font-family:var(--font-mono); color:var(--accent-color); font-size:12px; font-weight:600;">Key: ${u.password}</span>
                     </td>
                     <td>${u.specialization}</td>
                     <td class="text-right">
-                        <button class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="app.editConsultantPrompt('${u.email}', '${u.name}', '${u.specialization}')">
+                        <button class="btn btn-secondary" style="padding:8px 14px; font-size:13px;" onclick="app.editConsultantPrompt('${u.email}', '${u.name}', '${u.specialization}')">
                             <i class="fa-solid fa-user-pen"></i> Edit
                         </button>
-                        <button class="btn btn-secondary" style="padding:6px 12px; font-size:12px; color:var(--rose);" onclick="app.deleteConsultant('${u.email}')">
+                        <button class="btn btn-secondary" style="padding:8px 14px; font-size:13px; color:var(--rose);" onclick="app.deleteConsultant('${u.email}')">
                             <i class="fa-solid fa-trash-can"></i> Delete
                         </button>
                     </td>
