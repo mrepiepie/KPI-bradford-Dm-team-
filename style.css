@@ -623,12 +623,14 @@ a:hover {
 }
 
 .report-emp-header h3 {
-    font-size: 22px;
+    font-size: 28px; /* Large readable name */
+    font-weight: 700;
 }
 
 .total-points {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 18px; /* Scaled up for admin view visibility */
+    font-weight: 600;
     color: var(--accent-color);
 }
 
@@ -723,8 +725,9 @@ a:hover {
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 8px 16px;
+    padding: 10px 20px; /* Increased padding */
     font-family: var(--font-mono);
+    font-size: 16px; /* Increased font-size */
     outline: none;
 }
 
