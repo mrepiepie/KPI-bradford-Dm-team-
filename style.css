@@ -352,7 +352,7 @@ a:hover {
 }
 
 .header-logo {
-    height: 52px; /* Scaled up for crystal clarity */
+    height: 32px; /* Reduced size for smaller left logo */
     width: auto;
     object-fit: contain;
 }
