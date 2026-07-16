@@ -10,11 +10,18 @@ const JWT_SECRET = 'bradford_intl_alliance_secret_key_2026';
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // Serve frontend static files from root
+// Serve static files — use both __dirname and process.cwd() for Vercel compatibility
+app.use(express.static(path.join(__dirname)));
+app.use(express.static(process.cwd()));
 
-const USERS_FILE = path.join(__dirname, 'data', 'users.json');
-const SUBMISSIONS_FILE = path.join(__dirname, 'data', 'submissions.json');
-const CONFIGS_FILE = path.join(__dirname, 'data', 'kpi_configs.json');
+// Resolve data directory — works both locally (__dirname) and on Vercel (process.cwd())
+const DATA_DIR = fs.existsSync(path.join(__dirname, 'data')) 
+    ? path.join(__dirname, 'data') 
+    : path.join(process.cwd(), 'data');
+
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
+const CONFIGS_FILE = path.join(DATA_DIR, 'kpi_configs.json');
 
 // ----------------------------------------------------------------
 // In-memory data store — loaded once at startup.
@@ -612,7 +619,10 @@ app.post('/api/admin/submissions/bulk', authenticateToken, requireAdmin, (req, r
 
 // Serve frontend single page index.html for all main paths
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    const indexPath = fs.existsSync(path.join(__dirname, 'index.html'))
+        ? path.join(__dirname, 'index.html')
+        : path.join(process.cwd(), 'index.html');
+    res.sendFile(indexPath);
 });
 
 // Export for Vercel serverless — also start locally when run directly
