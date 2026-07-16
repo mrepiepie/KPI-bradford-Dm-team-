@@ -132,6 +132,9 @@
                             <button class="btn btn-emerald" onclick="app.navigateTo('view-admin-control')">
                                 <i class="fa-solid fa-gears"></i> Open Control Panel
                             </button>
+                            <button class="btn btn-secondary" onclick="app.navigateToAdminTeam()">
+                                <i class="fa-solid fa-users-gear"></i> Manage Team
+                            </button>
                             <button class="btn btn-secondary" onclick="app.navigateTo('view-daily-report')">
                                 <i class="fa-solid fa-calendar-day"></i> Daily Checklist
                             </button>
@@ -497,6 +500,7 @@
                     <div>
                         <h2 id="modal-user-name" style="font-family:var(--font-heading); font-size:20px; font-weight:700;">Name</h2>
                         <span id="modal-user-spec" class="badge" style="margin-top:4px;">Specialization</span>
+                        <div style="font-size:13px; color:var(--text-muted); margin-top:8px;" id="modal-user-meta"></div>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="padding:8px; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="app.closeUserAnalytics()"><i class="fa-solid fa-xmark"></i></button>

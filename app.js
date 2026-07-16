@@ -143,6 +143,11 @@ class KPISystem {
         this.currentView = viewId;
     }
 
+    navigateToAdminTeam() {
+        this.activeAdminTab = "team";
+        this.navigateTo("view-admin-control");
+    }
+
     async login() {
         const email = document.getElementById("login-email").value.trim();
         const password = document.getElementById("login-password").value;
@@ -568,7 +573,9 @@ class KPISystem {
 
                 card.innerHTML = `
                     <div class="report-emp-header">
-                        <h3>${submission.submittedBy} <span class="badge">${userObj.specialization}</span></h3>
+                        <h3 style="cursor:pointer;" onclick="app.showUserAnalytics('${submission.userId}', '${submission.submittedBy}', '${userObj.specialization}')">
+                            ${submission.submittedBy} <span class="badge">${userObj.specialization}</span>
+                        </h3>
                         <span class="total-points">Total Score: ${submission.score} pts</span>
                     </div>
                     <div class="table-responsive">
@@ -644,6 +651,10 @@ class KPISystem {
 
             monthlyData.forEach(emp => {
                 const tr = document.createElement("tr");
+                if (this.currentUser && this.currentUser.role === "Admin") {
+                    tr.style.cursor = "pointer";
+                    tr.addEventListener("click", () => this.showUserAnalytics(emp.id, emp.name, emp.specialization || "Consultant"));
+                }
                 tr.innerHTML = `
                     <td><strong>${emp.name}</strong></td>
                     <td>${emp.submissionsCount} Active Days</td>
@@ -834,7 +845,7 @@ class KPISystem {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td>
-                        <strong>${u.name}</strong><br>
+                        <strong style="cursor:pointer; text-decoration:underline; text-underline-offset: 3px;" onclick="app.showUserAnalytics('${u.id}', '${u.name}', '${u.specialization}')">${u.name}</strong><br>
                         <span style="color:var(--text-muted); font-size:12px;">${u.email}</span><br>
                         <span style="font-family:var(--font-mono); color:var(--accent-color); font-size:12px; font-weight:600;">Key: ${u.password}</span>
                     </td>
@@ -1160,6 +1171,23 @@ class KPISystem {
         document.getElementById("modal-stat-points").innerText = "Loading...";
         document.getElementById("modal-stat-days").innerText = "Loading...";
         document.getElementById("modal-stat-avg").innerText = "Loading...";
+
+        const metaEl = document.getElementById("modal-user-meta");
+        metaEl.innerHTML = "Loading metadata...";
+
+        // Look up email & key
+        try {
+            const uResponse = await fetch('/api/admin/users', { headers: this.getHeaders() });
+            const uList = await uResponse.json();
+            const found = uList.find(u => u.id === userId);
+            if (found) {
+                metaEl.innerHTML = `Email: <strong style="color:var(--text-primary);">${found.email}</strong> &nbsp;|&nbsp; Key: <strong style="color:var(--accent-color);">${found.password}</strong>`;
+            } else {
+                metaEl.innerHTML = "";
+            }
+        } catch (e) {
+            metaEl.innerHTML = "Metadata unavailable";
+        }
         
         const logsBody = document.getElementById("modal-logs-rows");
         logsBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Loading logs...</td></tr>`;

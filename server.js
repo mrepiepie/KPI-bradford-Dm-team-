@@ -215,7 +215,9 @@ app.get('/api/reports/monthly', authenticateToken, (req, res) => {
         const u = users[email];
         if (u.role !== 'Admin') {
             summary[u.id] = {
+                id: u.id,
                 name: u.name,
+                specialization: u.specialization,
                 submissionsCount: 0,
                 score: 0
             };
