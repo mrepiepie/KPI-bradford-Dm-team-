@@ -518,13 +518,37 @@ a:hover {
     padding: 32px;
 }
 
-.category-title {
-    font-family: var(--font-heading);
-    font-size: 24px;
+.category-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 12px;
     margin-bottom: 24px;
+    gap: 12px;
+}
+
+.category-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
     color: var(--accent-color);
+    font-weight: 700;
+}
+
+.category-weightage-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex-shrink: 0;
 }
 
 .kpi-item-row {

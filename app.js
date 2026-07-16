@@ -327,7 +327,12 @@ class KPISystem {
             const catCard = document.createElement("div");
             catCard.className = "glass-card kpi-category-card";
             
-            let headerHtml = `<div class="category-title">${catName}</div>`;
+            const weightage = categories[catName][0].weightage || "";
+            let headerHtml = `
+                <div class="category-title-row">
+                    <div class="category-title">${catName}</div>
+                    ${weightage ? `<span class="category-weightage-badge">${weightage} weight</span>` : ""}
+                </div>`;
             let rowsHtml = "";
 
             categories[catName].forEach(item => {
@@ -1096,6 +1101,9 @@ class KPISystem {
                 <td>
                     <input type="text" class="btn btn-secondary text-left config-cell-label" style="width:100%; border:1px solid #e2e8f0;" value="${item.label}" onchange="app.updateConfigCache(${index}, 'label', this.value)">
                 </td>
+                <td style="width:110px;">
+                    <input type="text" class="btn btn-secondary config-cell-weightage" style="width:100%; border:1px solid #e2e8f0; text-align:center;" value="${item.weightage || ''}" placeholder="e.g. 20%" onchange="app.updateConfigCache(${index}, 'weightage', this.value)">
+                </td>
                 <td style="width:120px;">
                     <input type="number" class="btn btn-secondary config-cell-points" style="width:100%; border:1px solid #e2e8f0; text-align:center;" value="${item.points}" min="1" onchange="app.updateConfigCache(${index}, 'points', this.value)">
                 </td>
@@ -1123,6 +1131,7 @@ class KPISystem {
             id: newId,
             category: "General Activity",
             label: "Description of activity...",
+            weightage: "",
             points: 5
         });
         this.renderConfigEditorRows();
