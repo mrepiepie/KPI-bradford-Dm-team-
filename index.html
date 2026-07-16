@@ -159,7 +159,10 @@
                 <div class="glass-card page-title-card">
                     <div class="title-details">
                         <h2><i class="fa-solid fa-pencil-alt"></i> Daily KPI Submission</h2>
-                        <p id="kpi-date-label">Date: Loading...</p>
+                        <div style="display:flex; align-items:center; gap:12px; margin-top:10px; flex-wrap: wrap;">
+                            <label for="kpi-submission-date" style="font-size:17px; font-weight:600;">Submission Date:</label>
+                            <input type="date" id="kpi-submission-date" onchange="app.renderKPIForm()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary); padding:10px 20px; font-family:var(--font-mono); font-size:16px; outline:none;">
+                        </div>
                     </div>
                 </div>
 

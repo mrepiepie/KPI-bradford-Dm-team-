@@ -278,11 +278,20 @@ class KPISystem {
             categories[item.category].push(item);
         });
 
-        // Pull existing daily submission for today via API
+        // Pull existing daily submission for selected date via API
         let existingSubmission = null;
+        const dateInput = document.getElementById("kpi-submission-date");
+        if (dateInput && !dateInput.value) {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+        }
+        const selectedDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+
         try {
-            const todayStr = new Date().toISOString().split('T')[0];
-            const response = await fetch(`/api/reports/daily?date=${todayStr}`, {
+            const response = await fetch(`/api/reports/daily?date=${selectedDate}`, {
                 headers: this.getHeaders()
             });
             if (response.ok) {
@@ -406,7 +415,11 @@ class KPISystem {
             const response = await fetch('/api/kpis/submit', {
                 method: 'POST',
                 headers: this.getHeaders(),
-                body: JSON.stringify({ score, items: submissionItems })
+                body: JSON.stringify({
+                    score,
+                    items: submissionItems,
+                    date: document.getElementById("kpi-submission-date").value
+                })
             });
 
             const data = await response.json();

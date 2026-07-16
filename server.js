@@ -125,20 +125,20 @@ app.get('/api/kpis/configs', authenticateToken, (req, res) => {
 
 // 4. Submit Daily KPI
 app.post('/api/kpis/submit', authenticateToken, (req, res) => {
-    const { score, items } = req.body;
+    const { score, items, date } = req.body;
     
     if (req.user.role === 'Admin') {
         return res.status(400).json({ error: 'Administrators cannot submit daily KPIs' });
     }
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const submitDate = date || new Date().toISOString().split('T')[0];
     const submissions = readSubmissions();
 
-    if (!submissions[todayStr]) {
-        submissions[todayStr] = {};
+    if (!submissions[submitDate]) {
+        submissions[submitDate] = {};
     }
 
-    submissions[todayStr][req.user.id] = {
+    submissions[submitDate][req.user.id] = {
         submittedBy: req.user.name,
         email: req.user.email,
         score: score,
