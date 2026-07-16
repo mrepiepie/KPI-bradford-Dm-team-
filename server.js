@@ -434,6 +434,142 @@ app.get('/api/admin/users/:userId/submissions', authenticateToken, requireAdmin,
     res.json(userSubmissions);
 });
 
+// 15b. Export Submissions Data (Admin Only)
+app.get('/api/admin/submissions/export', authenticateToken, requireAdmin, (req, res) => {
+    const submissions = readSubmissions();
+    const configs = readConfigs();
+    const rows = [];
+
+    for (const date in submissions) {
+        const dayData = submissions[date];
+        for (const userId in dayData) {
+            const userSub = dayData[userId];
+            const userConfigs = configs[userId] || [];
+            
+            for (const itemId in userSub.items) {
+                const item = userSub.items[itemId];
+                const configItem = userConfigs.find(c => c.id === itemId);
+                const activityLabel = configItem ? configItem.label : itemId;
+
+                rows.push({
+                    'Date': date,
+                    'Name': userSub.submittedBy,
+                    'Email': userSub.email,
+                    'Activity': activityLabel,
+                    'Quantity': item.qty,
+                    'Points Earned': item.points,
+                    'Remarks': item.remarks
+                });
+            }
+        }
+    }
+
+    // Sort chronological descending
+    rows.sort((a, b) => b.Date.localeCompare(a.Date));
+    res.json(rows);
+});
+
+// 16. Bulk Import Submissions via Excel Rows (Admin Only)
+app.post('/api/admin/submissions/bulk', authenticateToken, requireAdmin, (req, res) => {
+    const { rows } = req.body;
+    if (!Array.isArray(rows)) {
+        return res.status(400).json({ error: 'Rows array is required' });
+    }
+
+    const users = readUsers();
+    const configs = readConfigs();
+    const submissions = readSubmissions();
+    let importedCount = 0;
+    let skippedCount = 0;
+    const errors = [];
+
+    rows.forEach((row, index) => {
+        const { date, email, activity, qty, remarks } = row;
+        if (!date || !email || !activity) {
+            skippedCount++;
+            errors.push(`Row ${index + 1}: Missing date, email, or activity name`);
+            return;
+        }
+
+        // Handle date string conversion if parsed as serial Excel float/numeric
+        let finalDate = date;
+        if (typeof date === 'number') {
+            const utcDays  = Math.floor(date - 25569);
+            const utcValue = utcDays * 86400;
+            const dateInfo = new Date(utcValue * 1000);
+            const year = dateInfo.getFullYear();
+            const month = String(dateInfo.getMonth() + 1).padStart(2, '0');
+            const day = String(dateInfo.getDate()).padStart(2, '0');
+            finalDate = `${year}-${month}-${day}`;
+        } else {
+            finalDate = String(date).trim();
+        }
+
+        const cleanEmail = email.toLowerCase().trim();
+        const user = users[cleanEmail];
+        if (!user) {
+            skippedCount++;
+            errors.push(`Row ${index + 1}: Consultant with email "${email}" not found`);
+            return;
+        }
+
+        const userConfigs = configs[user.id] || [];
+        const matchedMetric = userConfigs.find(
+            m => m.label.toLowerCase().trim() === activity.toLowerCase().trim()
+        );
+        if (!matchedMetric) {
+            skippedCount++;
+            errors.push(`Row ${index + 1}: Activity "${activity}" not configured for ${user.name}`);
+            return;
+        }
+
+        const parsedQty = parseInt(qty, 10) || 0;
+        if (parsedQty <= 0) {
+            skippedCount++;
+            errors.push(`Row ${index + 1}: Quantity must be greater than zero`);
+            return;
+        }
+
+        // Initialize submission structure
+        if (!submissions[finalDate]) {
+            submissions[finalDate] = {};
+        }
+        if (!submissions[finalDate][user.id]) {
+            submissions[finalDate][user.id] = {
+                submittedBy: user.name,
+                email: cleanEmail,
+                score: 0,
+                items: {}
+            };
+        }
+
+        // Update items
+        const pointsEarned = parsedQty * matchedMetric.points;
+        submissions[finalDate][user.id].items[matchedMetric.id] = {
+            qty: parsedQty,
+            points: pointsEarned,
+            remarks: remarks || `Imported historical log for ${activity}`
+        };
+
+        // Recalculate score for that user on that day
+        let dailyScore = 0;
+        for (const itemKey in submissions[finalDate][user.id].items) {
+            dailyScore += submissions[finalDate][user.id].items[itemKey].points;
+        }
+        submissions[finalDate][user.id].score = dailyScore;
+        importedCount++;
+    });
+
+    writeSubmissions(submissions);
+
+    res.json({
+        message: `Successfully imported ${importedCount} record(s). Skipped ${skippedCount} record(s).`,
+        importedCount,
+        skippedCount,
+        errors
+    });
+});
+
 // Serve frontend single page index.html for all main paths
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

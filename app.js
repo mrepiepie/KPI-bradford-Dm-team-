@@ -1344,6 +1344,113 @@ class KPISystem {
             modal.style.display = "none";
         }});
     }
+
+    async exportToExcel() {
+        if (this.currentUser.role !== "Admin") return;
+        this.showToast("Preparing Excel report...", "success");
+
+        try {
+            // Fetch Leaderboard rank list
+            const resLeaderboard = await fetch('/api/kpis/leaderboard', { headers: this.getHeaders() });
+            const leaderboard = await resLeaderboard.json();
+            
+            // Format leaderboard rows
+            const summaryRows = leaderboard.map((c, i) => ({
+                'Rank': i + 1,
+                'Consultant Name': c.name,
+                'Specialization': c.specialization,
+                'Monthly Accumulation (pts)': c.score
+            }));
+
+            // Fetch Master raw logs
+            const resLogs = await fetch('/api/admin/submissions/export', { headers: this.getHeaders() });
+            const logs = await resLogs.json();
+
+            // Create XLSX Workbook
+            const wb = XLSX.utils.book_new();
+            const wsSummary = XLSX.utils.json_to_sheet(summaryRows);
+            const wsLogs = XLSX.utils.json_to_sheet(logs);
+
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Leaderboard Ranking");
+            XLSX.utils.book_append_sheet(wb, wsLogs, "Activity Master Audit");
+
+            XLSX.writeFile(wb, "BIA_Digital_Marketing_KPI_Report.xlsx");
+            this.showToast("Excel workbook downloaded successfully!", "success");
+        } catch (e) {
+            this.showToast("Failed to generate Excel report: " + e.message, "error");
+        }
+    }
+
+    downloadExcelTemplate() {
+        const sampleRows = [
+            {
+                'date': '2026-07-16',
+                'email': 'mufeeda@bradfordia.org',
+                'activity': 'Display Ads, Banners, and Grid Creatives',
+                'qty': 2,
+                'remarks': 'Backfilled campaign creatives'
+            },
+            {
+                'date': '2026-07-16',
+                'email': 'sakshi@bradfordia.org',
+                'activity': 'A/B Test Visual Layout Variations',
+                'qty': 1,
+                'remarks': 'Ingested historical A/B variation updates'
+            }
+        ];
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(sampleRows);
+        XLSX.utils.book_append_sheet(wb, ws, "Submissions Import Template");
+        XLSX.writeFile(wb, "KPI_Import_Template.xlsx");
+        this.showToast("Excel import template downloaded!", "success");
+    }
+
+    importExcelData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        this.showToast("Reading spreadsheet file...", "success");
+        const reader = new FileReader();
+
+        reader.onload = async (e) => {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[firstSheetName];
+                const rows = XLSX.utils.sheet_to_json(sheet);
+
+                if (rows.length === 0) {
+                    throw new Error("No data records found in Excel sheet");
+                }
+
+                // POST to bulk import endpoint
+                const res = await fetch('/api/admin/submissions/bulk', {
+                    method: 'POST',
+                    headers: this.getHeaders(),
+                    body: JSON.stringify({ rows })
+                });
+
+                const result = await res.json();
+                
+                if (res.ok) {
+                    this.showToast(result.message, "success");
+                    // Refresh view
+                    this.renderAdminControl();
+                    // Clear file input
+                    event.target.value = "";
+                } else {
+                    throw new Error(result.error || "Bulk ingestion failed");
+                }
+            } catch (err) {
+                this.showToast("Import error: " + err.message, "error");
+                event.target.value = "";
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
 }
 
 // Global App Initialization Hook

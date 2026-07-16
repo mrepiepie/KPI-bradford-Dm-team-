@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- GSAP for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- SheetJS for Excel Import/Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="assets/logo_white.png">
 </head>
@@ -140,6 +142,9 @@
                             </button>
                             <button class="btn btn-primary" onclick="app.navigateTo('view-monthly-report')">
                                 <i class="fa-solid fa-chart-pie"></i> Monthly Summary
+                            </button>
+                            <button class="btn btn-secondary" onclick="app.exportToExcel()">
+                                <i class="fa-solid fa-file-excel" style="color:var(--emerald);"></i> Export to Excel
                             </button>
                         </div>
                     </div>
@@ -400,6 +405,16 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block">Add Consultant</button>
                             </form>
+                        </div>
+
+                        <div class="glass-card" style="margin-top:20px;">
+                            <h3><i class="fa-solid fa-file-import"></i> Bulk Import Historical Data</h3>
+                            <p style="color:var(--text-muted); font-size:12px; margin-top:8px;">Backfill daily submissions via Excel (.xlsx). Download the template below, enter details, and upload.</p>
+                            <div style="display:flex; gap:12px; margin-top:15px; flex-wrap:wrap;">
+                                <button class="btn btn-secondary" onclick="app.downloadExcelTemplate()" style="padding:10px 16px; font-size:13px;"><i class="fa-solid fa-download"></i> Template</button>
+                                <button class="btn btn-emerald" onclick="document.getElementById('import-excel-file').click()" style="padding:10px 16px; font-size:13px;"><i class="fa-solid fa-upload"></i> Import Excel</button>
+                                <input type="file" id="import-excel-file" style="display:none;" onchange="app.importExcelData(event)" accept=".xlsx, .xls">
+                            </div>
                         </div>
 
                         <div class="glass-card">
