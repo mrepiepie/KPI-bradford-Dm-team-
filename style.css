@@ -940,3 +940,24 @@ body.admin-mode .kpi-table tbody tr:hover {
     font-weight: 700 !important;
     color: var(--accent-color) !important;
 }
+
+/* ACCESSIBILITY & ADULT SCALING OVERRIDES */
+.badge {
+    font-size: 14px !important;
+    padding: 6px 12px !important;
+    font-weight: 600 !important;
+}
+
+.back-btn {
+    font-size: 15px !important;
+    padding: 14px 28px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+}
+
+.admin-btn-group .btn {
+    font-size: 15px !important;
+    padding: 16px 32px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+}
