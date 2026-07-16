@@ -636,6 +636,12 @@ class KPISystem {
                 }]
             };
 
+            // Calculate total monthly score to display percentage distributions
+            let totalMonthlyScore = 0;
+            monthlyData.forEach(emp => {
+                if (emp.score > 0) totalMonthlyScore += emp.score;
+            });
+
             monthlyData.forEach(emp => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -646,7 +652,8 @@ class KPISystem {
                 tbody.appendChild(tr);
 
                 if (emp.score > 0) {
-                    chartData.labels.push(emp.name);
+                    const percent = totalMonthlyScore > 0 ? ((emp.score / totalMonthlyScore) * 100).toFixed(1) : 0;
+                    chartData.labels.push(`${emp.name} (${percent}%)`);
                     chartData.datasets[0].data.push(emp.score);
                 }
             });
