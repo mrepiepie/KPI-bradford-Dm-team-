@@ -911,6 +911,9 @@ class KPISystem {
                     </td>
                     <td>${u.specialization}</td>
                     <td class="text-right">
+                        <button class="btn btn-secondary" style="padding:8px 14px; font-size:13px; color:var(--accent-color);" onclick="app.changeConsultantPasswordPrompt('${u.email}')">
+                            <i class="fa-solid fa-key"></i> Key
+                        </button>
                         <button class="btn btn-secondary" style="padding:8px 14px; font-size:13px;" onclick="app.editConsultantPrompt('${u.email}', '${u.name}', '${u.specialization}')">
                             <i class="fa-solid fa-user-pen"></i> Edit
                         </button>
@@ -954,6 +957,11 @@ class KPISystem {
             this.showToast(e.message, "error");
         }
     }
+    changeConsultantPasswordPrompt(email) {
+        const newPass = prompt("Enter new password for this consultant account:");
+        if (newPass === null || newPass.trim() === "") return;
+        this.updateConsultant(email, null, null, newPass.trim());
+    }
 
     editConsultantPrompt(email, name, spec) {
         const newName = prompt("Edit Consultant Name:", name);
@@ -966,7 +974,9 @@ class KPISystem {
     }
 
     async updateConsultant(email, name, specialization, password) {
-        const body = { name, specialization };
+        const body = {};
+        if (name) body.name = name;
+        if (specialization) body.specialization = specialization;
         if (password) body.password = password;
 
         try {

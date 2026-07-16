@@ -965,3 +965,17 @@ body.admin-mode .kpi-table tbody tr:hover {
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
 }
+
+/* HIGH-CONTRAST DROPDOWN OPTION FIXES */
+select {
+    color: var(--accent-color) !important;
+    font-weight: 600 !important;
+}
+
+select option {
+    background-color: #161615 !important; /* Force dark background */
+    color: #e6e3dd !important; /* Force high-contrast text */
+    font-family: var(--font-mono) !important;
+    font-size: 15px !important;
+    padding: 12px 10px !important;
+}
