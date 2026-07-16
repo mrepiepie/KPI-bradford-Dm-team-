@@ -818,7 +818,8 @@ class KPISystem {
             trendData.forEach(day => total += day.score);
 
             // Fetch monthly counts to figure out active submissions
-            const resMonthly = await fetch(`/api/reports/monthly?month=${new Date().toISOString().substring(0, 7)}`, {
+            const currentMonth = new Date().toISOString().substring(0, 7);
+            const resMonthly = await fetch(`/api/reports/summary?mode=month&value=${currentMonth}`, {
                 headers: this.getHeaders()
             });
             const monthlyData = await resMonthly.json();
