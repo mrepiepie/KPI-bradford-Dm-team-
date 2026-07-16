@@ -418,14 +418,24 @@ app.get('/api/admin/analytics/trends', authenticateToken, requireAdmin, (req, re
     res.json(trend);
 });
 
-// 15. Get submissions for a specific consultant (Admin Only)
+// 15. Get submissions for a specific consultant (Admin Only, supports filters)
 app.get('/api/admin/users/:userId/submissions', authenticateToken, requireAdmin, (req, res) => {
     const { userId } = req.params;
+    const { mode, value } = req.query;
     const submissions = readSubmissions();
     const userSubmissions = [];
 
     for (const date in submissions) {
-        if (submissions[date] && submissions[date][userId]) {
+        let isMatch = false;
+        if (!mode || mode === 'all') {
+            isMatch = true;
+        } else if (mode === 'month' && value && date.startsWith(value)) {
+            isMatch = true;
+        } else if (mode === 'day' && value && date === value) {
+            isMatch = true;
+        }
+
+        if (isMatch && submissions[date] && submissions[date][userId]) {
             userSubmissions.push({
                 date,
                 score: submissions[date][userId].score,

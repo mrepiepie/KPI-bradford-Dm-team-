@@ -536,6 +536,22 @@
             </div>
             
             <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <!-- Modal Filter Section -->
+                <div class="glass-card" style="padding:15px; margin-bottom:20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between; border-color:rgba(255,255,255,0.06);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-family:var(--font-mono); font-size:13px; text-transform:uppercase; color:var(--accent-color); font-weight:600;"><i class="fa-solid fa-filter"></i> Audit Range:</span>
+                        <select id="modal-filter-mode" onchange="app.toggleModalFilterMode()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary); padding:6px 12px; font-family:var(--font-mono); font-size:13px; outline:none; cursor:pointer;">
+                            <option value="month" style="background:#161615;">Month Basis</option>
+                            <option value="day" style="background:#161615;">Day Basis</option>
+                            <option value="all" style="background:#161615;">All-Time Records</option>
+                        </select>
+                    </div>
+                    <div id="modal-filter-inputs-wrapper" style="display:flex; gap:8px; align-items:center;">
+                        <input type="month" id="modal-filter-month" onchange="app.refreshUserAnalytics()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary); padding:6px 12px; font-family:var(--font-mono); font-size:13px; outline:none;">
+                        <input type="date" id="modal-filter-day" onchange="app.refreshUserAnalytics()" style="display:none; background:transparent; border:1px solid var(--border-color); color:var(--text-primary); padding:6px 12px; font-family:var(--font-mono); font-size:13px; outline:none;">
+                    </div>
+                </div>
+
                 <div class="grid-two-cols" style="gap:20px;">
                     <!-- User Statistics -->
                     <div style="display:flex; flex-direction:column; gap:16px;">

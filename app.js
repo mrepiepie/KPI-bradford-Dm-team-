@@ -1232,8 +1232,51 @@ class KPISystem {
         }
     }
 
+    toggleModalFilterMode() {
+        const mode = document.getElementById("modal-filter-mode").value;
+        const monthInput = document.getElementById("modal-filter-month");
+        const dayInput = document.getElementById("modal-filter-day");
+
+        if (mode === "month") {
+            monthInput.style.display = "block";
+            dayInput.style.display = "none";
+            if (!monthInput.value) {
+                monthInput.value = new Date().toISOString().substring(0, 7);
+            }
+        } else if (mode === "day") {
+            monthInput.style.display = "none";
+            dayInput.style.display = "block";
+            if (!dayInput.value) {
+                dayInput.value = new Date().toISOString().split('T')[0];
+            }
+        } else {
+            monthInput.style.display = "none";
+            dayInput.style.display = "none";
+        }
+
+        this.refreshUserAnalytics();
+    }
+
     async showUserAnalytics(userId, name, specialization) {
         if (this.currentUser.role !== "Admin") return;
+
+        // Save target context
+        this.activeAnalyticsUser = { id: userId, name, specialization };
+
+        // Reset Filter inputs to default
+        const modeSelect = document.getElementById("modal-filter-mode");
+        if (modeSelect) modeSelect.value = "month";
+        
+        const monthInput = document.getElementById("modal-filter-month");
+        if (monthInput) {
+            monthInput.value = new Date().toISOString().substring(0, 7);
+            monthInput.style.display = "block";
+        }
+
+        const dayInput = document.getElementById("modal-filter-day");
+        if (dayInput) {
+            dayInput.style.display = "none";
+        }
 
         // Reset statistics labels
         document.getElementById("modal-user-name").innerText = name;
@@ -1258,7 +1301,34 @@ class KPISystem {
         } catch (e) {
             metaEl.innerHTML = "Metadata unavailable";
         }
+
+        // Run query and display
+        await this.refreshUserAnalytics();
+
+        // Animate overlay modal open
+        const modal = document.getElementById("user-analytics-modal");
+        const content = modal.querySelector(".modal-content");
         
+        modal.style.display = "flex";
+        gsap.killTweensOf([modal, content]);
+        gsap.to(modal, { opacity: 1, duration: 0.3 });
+        gsap.to(content, { y: 0, opacity: 1, duration: 0.3 });
+    }
+
+    async refreshUserAnalytics() {
+        if (!this.activeAnalyticsUser) return;
+        const { id: userId } = this.activeAnalyticsUser;
+
+        const modeSelect = document.getElementById("modal-filter-mode");
+        const mode = modeSelect ? modeSelect.value : "month";
+        let val = "";
+
+        if (mode === "month") {
+            val = document.getElementById("modal-filter-month").value;
+        } else if (mode === "day") {
+            val = document.getElementById("modal-filter-day").value;
+        }
+
         const logsBody = document.getElementById("modal-logs-rows");
         logsBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Loading logs...</td></tr>`;
 
@@ -1268,17 +1338,14 @@ class KPISystem {
             const configs = await resConfigs.json();
             const userKPIs = configs[userId] || [];
 
-            // Fetch this user's submissions
-            const response = await fetch(`/api/admin/users/${userId}/submissions`, { headers: this.getHeaders() });
+            // Fetch this user's submissions matching the filter
+            const queryParams = new URLSearchParams({ mode, value: val }).toString();
+            const response = await fetch(`/api/admin/users/${userId}/submissions?${queryParams}`, { headers: this.getHeaders() });
             const userSubmissions = await response.json();
 
-            // Calculate current month's submissions for this user
-            const currentMonth = new Date().toISOString().substring(0, 7); // e.g. "2026-07"
-            const currentMonthSubs = userSubmissions.filter(sub => sub.date.startsWith(currentMonth));
-
             let totalPoints = 0;
-            currentMonthSubs.forEach(sub => totalPoints += sub.score);
-            const activeDays = currentMonthSubs.length;
+            userSubmissions.forEach(sub => totalPoints += sub.score);
+            const activeDays = userSubmissions.length;
 
             document.getElementById("modal-stat-points").innerText = `${totalPoints} pts`;
             document.getElementById("modal-stat-days").innerText = `${activeDays} days`;
@@ -1286,7 +1353,7 @@ class KPISystem {
 
             // Group submissions by category to render Polar Area Chart
             const categoryPoints = {};
-            currentMonthSubs.forEach(sub => {
+            userSubmissions.forEach(sub => {
                 for (const itemId in sub.items) {
                     const kpiItem = userKPIs.find(item => item.id == itemId);
                     const catName = kpiItem ? kpiItem.category : "General";
@@ -1303,7 +1370,7 @@ class KPISystem {
             // Render log rows
             logsBody.innerHTML = "";
             if (userSubmissions.length === 0) {
-                logsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No entries submitted yet.</td></tr>`;
+                logsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No entries submitted matching this filter.</td></tr>`;
             } else {
                 userSubmissions.forEach(sub => {
                     let summaryHtml = "";
