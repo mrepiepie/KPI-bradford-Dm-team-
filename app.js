@@ -35,7 +35,11 @@ class KPISystem {
         document.getElementById("audit-log-date").value = todayStr;
         
         const yearMonth = todayStr.substring(0, 7);
-        document.getElementById("monthly-report-month").value = yearMonth;
+        const monthReportMonth = document.getElementById("monthly-report-month");
+        if (monthReportMonth) monthReportMonth.value = yearMonth;
+        
+        const modeEl = document.getElementById("summary-filter-mode");
+        if (modeEl) modeEl.value = "month";
 
         const dateLabel = document.getElementById("kpi-date-label");
         if (dateLabel) {
@@ -617,19 +621,58 @@ class KPISystem {
         }
     }
 
+    toggleSummaryFilterMode() {
+        const mode = document.getElementById("summary-filter-mode").value;
+        const monthInput = document.getElementById("monthly-report-month");
+        const dayInput = document.getElementById("monthly-report-day");
+
+        if (mode === "month") {
+            monthInput.style.display = "block";
+            dayInput.style.display = "none";
+            if (!monthInput.value) {
+                const todayStr = new Date().toISOString().split('T')[0];
+                monthInput.value = todayStr.substring(0, 7);
+            }
+        } else if (mode === "day") {
+            monthInput.style.display = "none";
+            dayInput.style.display = "block";
+            if (!dayInput.value) {
+                const d = new Date();
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                dayInput.value = `${year}-${month}-${day}`;
+            }
+        } else {
+            monthInput.style.display = "none";
+            dayInput.style.display = "none";
+        }
+
+        this.renderMonthlyReport();
+    }
+
     async renderMonthlyReport() {
-        const monthVal = document.getElementById("monthly-report-month").value;
+        const modeSelect = document.getElementById("summary-filter-mode");
+        const mode = modeSelect ? modeSelect.value : "month";
+        let val = "";
+
+        if (mode === "month") {
+            val = document.getElementById("monthly-report-month").value;
+            if (!val) return;
+        } else if (mode === "day") {
+            val = document.getElementById("monthly-report-day").value;
+            if (!val) return;
+        }
+
         const tbody = document.getElementById("monthly-report-body");
         tbody.innerHTML = "";
 
-        if (!monthVal) return;
-
         try {
-            const response = await fetch(`/api/reports/monthly?month=${monthVal}`, {
+            const response = await fetch(`/api/reports/summary?mode=${mode}&value=${val}`, {
                 headers: this.getHeaders()
             });
 
-            if (!response.ok) throw new Error("Failed to load monthly summary");
+            if (!response.ok) throw new Error("Failed to load performance summary");
 
             const monthlyData = await response.json();
 
@@ -1347,35 +1390,52 @@ class KPISystem {
 
     async exportToExcel() {
         if (this.currentUser.role !== "Admin") return;
-        this.showToast("Preparing Excel report...", "success");
+        
+        const modeSelect = document.getElementById("summary-filter-mode");
+        const mode = modeSelect ? modeSelect.value : "month";
+        let val = "";
+
+        if (mode === "month") {
+            val = document.getElementById("monthly-report-month").value;
+        } else if (mode === "day") {
+            val = document.getElementById("monthly-report-day").value;
+        }
+
+        this.showToast(`Preparing Excel report (${mode} basis)...`, "success");
 
         try {
-            // Fetch Leaderboard rank list
-            const resLeaderboard = await fetch('/api/kpis/leaderboard', { headers: this.getHeaders() });
-            const leaderboard = await resLeaderboard.json();
+            // Fetch dynamic performance summary matching the filter
+            const resSummary = await fetch(`/api/reports/summary?mode=${mode}&value=${val}`, { headers: this.getHeaders() });
+            const summaryData = await resSummary.json();
             
-            // Format leaderboard rows
-            const summaryRows = leaderboard.map((c, i) => ({
+            // Sort descending to build leaderboard rankings
+            summaryData.sort((a, b) => b.score - a.score);
+            
+            const summaryRows = summaryData.map((c, i) => ({
                 'Rank': i + 1,
                 'Consultant Name': c.name,
                 'Specialization': c.specialization,
-                'Monthly Accumulation (pts)': c.score
+                'Period Score (pts)': c.score,
+                'Period Active Days': c.submissionsCount
             }));
 
-            // Fetch Master raw logs
-            const resLogs = await fetch('/api/admin/submissions/export', { headers: this.getHeaders() });
+            // Fetch matching raw logs
+            const resLogs = await fetch(`/api/admin/submissions/export?mode=${mode}&value=${val}`, { headers: this.getHeaders() });
             const logs = await resLogs.json();
 
-            // Create XLSX Workbook
+            // Create Workbook
             const wb = XLSX.utils.book_new();
             const wsSummary = XLSX.utils.json_to_sheet(summaryRows);
             const wsLogs = XLSX.utils.json_to_sheet(logs);
 
-            XLSX.utils.book_append_sheet(wb, wsSummary, "Leaderboard Ranking");
-            XLSX.utils.book_append_sheet(wb, wsLogs, "Activity Master Audit");
+            // Determine file naming suffix
+            const suffix = mode === "all" ? "All_Time" : val;
 
-            XLSX.writeFile(wb, "BIA_Digital_Marketing_KPI_Report.xlsx");
-            this.showToast("Excel workbook downloaded successfully!", "success");
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Filtered Ranking");
+            XLSX.utils.book_append_sheet(wb, wsLogs, "Filtered Log Audit");
+
+            XLSX.writeFile(wb, `BIA_KPI_Report_${mode}_${suffix}.xlsx`);
+            this.showToast("Filtered Excel workbook downloaded!", "success");
         } catch (e) {
             this.showToast("Failed to generate Excel report: " + e.message, "error");
         }

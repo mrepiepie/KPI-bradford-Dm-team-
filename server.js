@@ -199,13 +199,9 @@ app.get('/api/reports/daily', authenticateToken, (req, res) => {
     res.json(dayData);
 });
 
-// 7. Monthly Report (Admin Only)
-app.get('/api/reports/monthly', authenticateToken, (req, res) => {
-    const { month } = req.query;
-
-    if (!month) {
-        return res.status(400).json({ error: 'Month query parameter is required' });
-    }
+// 7. General Summary Report (Supports All-Time, Monthly, and Daily filters)
+app.get('/api/reports/summary', authenticateToken, (req, res) => {
+    const { mode, value } = req.query; // mode = "all", "month", "day"
 
     const submissions = readSubmissions();
     const users = readUsers();
@@ -225,7 +221,16 @@ app.get('/api/reports/monthly', authenticateToken, (req, res) => {
     });
 
     for (const date in submissions) {
-        if (date.startsWith(month)) {
+        let isMatch = false;
+        if (mode === 'all') {
+            isMatch = true;
+        } else if (mode === 'month' && value && date.startsWith(value)) {
+            isMatch = true;
+        } else if (mode === 'day' && value && date === value) {
+            isMatch = true;
+        }
+
+        if (isMatch) {
             const dayData = submissions[date];
             for (const userId in dayData) {
                 if (summary[userId]) {
