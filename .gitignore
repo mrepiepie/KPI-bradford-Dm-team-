@@ -1,0 +1,4 @@
+node_modules/
+data/configs.json
+data/submissions.json
+data/logs.json

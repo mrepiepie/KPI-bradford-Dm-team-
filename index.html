@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIA Digital Marketing KPI System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Background Decoration Grid & Premium Video BG -->
+    <div class="bg-decoration">
+        <div class="blur-glow glow-1"></div>
+        <div class="blur-glow glow-2"></div>
+        <div class="video-bg-container">
+            <video autoplay loop muted playsinline id="bg-video">
+                <source src="assets/water.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app">
+
+        <!-- 1. LOGIN SCREEN -->
+        <section id="view-login" class="view active">
+            <div class="login-card-container">
+                <div class="login-card-unified">
+                    <!-- Top Showcase Banner -->
+                    <div class="login-card-showcase">
+                        <div class="showcase-tag">BIA Creative</div>
+                        <h2>explore the portal with all the hype.</h2>
+                        <div class="showcase-links">
+                            <span>digital@bradfordia.org</span>
+                            <span>bradfordia.org</span>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Form Block -->
+                    <div class="login-card-form-wrapper">
+                        <div class="logo-container" style="margin-bottom:20px;">
+                            <img src="assets/logo_white.png" alt="BIA Logo" style="height:80px;">
+                        </div>
+                        <h2 class="form-title" style="text-align:center; font-size:22px; margin-bottom:6px;">Digital Marketing KPI</h2>
+                        <p class="subtitle" style="text-align:center; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:28px;">Performance Management Portal</p>
+                        
+                        <form id="login-form">
+                            <div class="input-group">
+                                <i class="fa-regular fa-envelope"></i>
+                                <input type="email" id="login-email" placeholder="Email Address" required>
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="login-password" placeholder="Password" required>
+                            </div>
+                            <div class="error-msg" id="login-error"></div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <span>Sign In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view">
+            <div class="container">
+                <!-- App Header -->
+                <header class="app-header glass-card">
+                    <div class="header-left">
+                        <img src="assets/logo_white.png" alt="Bradford Logo" class="header-logo" onclick="app.logout()" style="cursor:pointer;" title="Click to Logout">
+                        <div>
+                            <h1>Digital Marketing KPI</h1>
+                            <span class="badge" id="user-role-badge">Consultant</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="user-info">
+                            <i class="fa-regular fa-user-circle"></i>
+                            <span id="user-display-name">Loading...</span>
+                        </div>
+                        <button class="btn btn-secondary logout-btn" onclick="app.logout()">
+                            <i class="fa-solid fa-sign-out-alt"></i> <span>Logout</span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Dashboard Cards Grid -->
+                <div class="dashboard-grid">
+                    <!-- Add KPI Card -->
+                    <div class="dashboard-card glass-card hover-lift" onclick="app.navigateTo('view-kpi-entry')">
+                        <div class="card-icon"><i class="fa-solid fa-square-plus"></i></div>
+                        <h3>Daily KPI Entry</h3>
+                        <p>Submit your digital marketing activities and daily performance metrics.</p>
+                        <span class="card-action">Enter Metrics <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <!-- Leaderboard Card -->
+                    <div class="dashboard-card glass-card hover-lift" onclick="app.navigateTo('view-leaderboard')">
+                        <div class="card-icon"><i class="fa-solid fa-trophy"></i></div>
+                        <h3>Leaderboard</h3>
+                        <p>View ranking lists and compare performance against other team members.</p>
+                        <span class="card-action">View Rankings <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <!-- Password Card -->
+                    <div class="dashboard-card glass-card hover-lift" onclick="app.navigateTo('view-password')">
+                        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>Security</h3>
+                        <p>Update your password and secure your account portal.</p>
+                        <span class="card-action">Change Password <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <!-- Reports Row (Admin / View-Only) -->
+                    <div class="admin-only-section glass-card" id="admin-reports-card" style="display: none;">
+                        <h3><i class="fa-solid fa-user-shield"></i> Administration Command Center</h3>
+                        <p>Control team accounts, adjust metric point scales, review audit logs, and inspect advanced analytics trends.</p>
+                        <div class="admin-btn-group">
+                            <button class="btn btn-emerald" onclick="app.navigateTo('view-admin-control')">
+                                <i class="fa-solid fa-gears"></i> Open Control Panel
+                            </button>
+                            <button class="btn btn-secondary" onclick="app.navigateTo('view-daily-report')">
+                                <i class="fa-solid fa-calendar-day"></i> Daily Checklist
+                            </button>
+                            <button class="btn btn-primary" onclick="app.navigateTo('view-monthly-report')">
+                                <i class="fa-solid fa-chart-pie"></i> Monthly Summary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. KPI ENTRY VIEW -->
+        <section id="view-kpi-entry" class="view">
+            <div class="container container-narrow">
+                <div class="navigation-bar">
+                    <button class="btn btn-back" onclick="app.navigateTo('view-dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="glass-card page-title-card">
+                    <div class="title-details">
+                        <h2><i class="fa-solid fa-pencil-alt"></i> Daily KPI Submission</h2>
+                        <p id="kpi-date-label">Date: Loading...</p>
+                    </div>
+                </div>
+
+                <form id="kpi-entry-form">
+                    <div id="dynamic-kpi-fields">
+                        <!-- Dynamically filled based on logged-in user -->
+                    </div>
+
+                    <div class="glass-card form-footer">
+                        <div class="score-summary">
+                            <span>Estimated Daily Score:</span>
+                            <strong id="estimated-score">0 pts</strong>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fa-regular fa-paper-plane"></i> Submit Daily KPI
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. LEADERBOARD VIEW -->
+        <section id="view-leaderboard" class="view">
+            <div class="container container-narrow">
+                <div class="navigation-bar">
+                    <button class="btn btn-back" onclick="app.navigateTo('view-dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="glass-card page-title-card">
+                    <h2>🏆 Leadership Board</h2>
+                    <p>Track team performance rankings based on total points accumulated this month.</p>
+                </div>
+
+                <div class="glass-card leaderboard-card">
+                    <div class="table-responsive">
+                        <table class="kpi-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Consultant</th>
+                                    <th>Specialization</th>
+                                    <th class="text-right">Total Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. CHANGE PASSWORD VIEW -->
+        <section id="view-password" class="view">
+            <div class="container container-narrow">
+                <div class="navigation-bar">
+                    <button class="btn btn-back" onclick="app.navigateTo('view-dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="glass-card form-card">
+                    <h2><i class="fa-solid fa-lock"></i> Change Password</h2>
+                    <p class="subtitle">Enter a new password for security verification.</p>
+
+                    <form id="password-form">
+                        <div class="input-group">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="password" id="old-pass" placeholder="Current Password" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock-open"></i>
+                            <input type="password" id="new-pass" placeholder="New Password" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-check-double"></i>
+                            <input type="password" id="confirm-pass" placeholder="Confirm New Password" required>
+                        </div>
+                        <div class="status-msg" id="password-status"></div>
+                        <button type="submit" class="btn btn-primary btn-block">Update Password</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. DAILY REPORT VIEW -->
+        <section id="view-daily-report" class="view">
+            <div class="container">
+                <div class="navigation-bar">
+                    <button class="btn btn-back" onclick="app.navigateTo('view-dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="glass-card page-title-card filter-card">
+                    <div class="filter-header">
+                        <h2>📅 Daily Employee Activity Report</h2>
+                        <div class="filter-inputs">
+                            <input type="date" id="daily-report-date" onchange="app.renderDailyReport()">
+                            <button class="btn btn-secondary" onclick="app.renderDailyReport()">View Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="daily-report-grid" id="daily-report-content">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. MONTHLY REPORT VIEW -->
+        <section id="view-monthly-report" class="view">
+            <div class="container">
+                <div class="navigation-bar">
+                    <button class="btn btn-back" onclick="app.navigateTo('view-dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="glass-card page-title-card filter-card">
+                    <div class="filter-header">
+                        <h2>📊 Monthly KPI Summary</h2>
+                        <div class="filter-inputs">
+                            <input type="month" id="monthly-report-month" onchange="app.renderMonthlyReport()">
+                            <button class="btn btn-secondary" onclick="app.renderMonthlyReport()">Filter Summary</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-two-cols">
+                    <!-- Chart Card -->
+                    <div class="glass-card chart-card">
+                        <h3>Team Contribution</h3>
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Table -->
+                    <div class="glass-card report-table-card">
+                        <h3>Detailed Summary</h3>
+                        <div class="table-responsive">
+                            <table class="kpi-table">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>KPI Submissions</th>
+                                        <th class="text-right">Accumulated Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthly-report-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. ADMIN CONTROL PANEL VIEW -->
+        <section id="view-admin-control" class="view">
+            <div class="container">
+                <div class="navigation-bar">
+                    <button class="btn btn-back" onclick="app.navigateTo('view-dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="glass-card page-title-card">
+                    <h2>⚙️ Administrative Control Panel</h2>
+                    <p>Perform system audits, manage credentials, adjust metric point weights, and review trend logs.</p>
+                    
+                    <div class="admin-tabs" style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary tab-btn active" data-tab="trends" onclick="app.switchAdminTab('trends')"><i class="fa-solid fa-chart-line"></i> Trends & Audits</button>
+                        <button class="btn btn-secondary tab-btn" data-tab="team" onclick="app.switchAdminTab('team')"><i class="fa-solid fa-users-gear"></i> Team Manager</button>
+                        <button class="btn btn-secondary tab-btn" data-tab="configs" onclick="app.switchAdminTab('configs')"><i class="fa-solid fa-sliders"></i> KPI Configurator</button>
+                        <button class="btn btn-secondary tab-btn" data-tab="logs" onclick="app.switchAdminTab('logs')"><i class="fa-solid fa-list-check"></i> Master Logs</button>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Trends & Analytics -->
+                <div id="admin-tab-trends" class="admin-tab-content active-tab" style="margin-top:20px;">
+                    <div class="grid-two-cols">
+                        <div class="glass-card">
+                            <h3>Monthly Points Trend</h3>
+                            <div class="chart-container" style="height:320px; position:relative; margin-top:15px;">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+                            <h3>Performance Statistics</h3>
+                            <div class="stat-boxes" style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+                                <div class="stat-box">
+                                    <span class="stat-label">Total Points Earned</span>
+                                    <strong id="stat-total-points">0 pts</strong>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Total Active Days</span>
+                                    <strong id="stat-active-days">0 days</strong>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Daily Point Average</span>
+                                    <strong id="stat-daily-avg">0 pts</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Team Manager -->
+                <div id="admin-tab-team" class="admin-tab-content" style="display:none; margin-top:20px;">
+                    <div class="grid-two-cols">
+                        <div class="glass-card">
+                            <h3>Create Consultant Account</h3>
+                            <form id="add-user-form" style="margin-top:15px;" onsubmit="app.addConsultant(event)">
+                                <div class="input-group">
+                                    <i class="fa-regular fa-user"></i>
+                                    <input type="text" id="add-user-name" placeholder="Full Name" required>
+                                </div>
+                                <div class="input-group">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <input type="email" id="add-user-email" placeholder="Email Address" required>
+                                </div>
+                                <div class="input-group">
+                                    <i class="fa-solid fa-user-tag"></i>
+                                    <input type="text" id="add-user-specialization" placeholder="Specialization (e.g. SEO Specialist)" required>
+                                </div>
+                                <div class="input-group">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <input type="password" id="add-user-password" placeholder="Temporary Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Add Consultant</button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card">
+                            <h3>Existing Consultants</h3>
+                            <div class="table-responsive" style="margin-top:15px; max-height: 400px; overflow-y: auto;">
+                                <table class="kpi-table" style="font-size:13px; width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Specialization</th>
+                                            <th class="text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-users-list">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: KPI Configurator -->
+                <div id="admin-tab-configs" class="admin-tab-content" style="display:none; margin-top:20px;">
+                    <div class="glass-card">
+                        <div class="config-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
+                            <h3>KPI Point Configurations</h3>
+                            <select id="config-user-select" class="btn btn-secondary" onchange="app.loadUserKPIConfig()">
+                                <option value="">Select Consultant...</option>
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div id="config-editor-fields" style="display:none;">
+                            <div class="table-responsive">
+                                <table class="kpi-table" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Activity Description</th>
+                                            <th>Points Per Unit</th>
+                                            <th class="text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="config-editor-rows">
+                                        <!-- Filled dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="config-actions" style="margin-top: 20px; display:flex; justify-content: space-between;">
+                                <button class="btn btn-secondary" onclick="app.addNewConfigRow()"><i class="fa-solid fa-plus"></i> Add New Metric</button>
+                                <button class="btn btn-primary" onclick="app.saveUserKPIConfig()"><i class="fa-regular fa-floppy-disk"></i> Save Configuration</button>
+                            </div>
+                        </div>
+                        
+                        <div id="config-editor-placeholder" style="text-align:center; padding:40px; color:var(--text-muted);">
+                            <i class="fa-solid fa-sliders" style="font-size:48px; margin-bottom:16px;"></i>
+                            <p>Please select a consultant from the dropdown above to load and edit their KPI configs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Master Audit Logs -->
+                <div id="admin-tab-logs" class="admin-tab-content" style="display:none; margin-top:20px;">
+                    <div class="glass-card">
+                        <div class="filter-header" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <h3>All Submissions Master Audit</h3>
+                            <div class="filter-inputs">
+                                <input type="date" id="audit-log-date" onchange="app.loadAuditLogs()">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="kpi-table" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Score</th>
+                                        <th>Activities Detail</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-logs-rows">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    <!-- 9. CONSULTANT ANALYTICS MODAL (ADMIN ONLY) -->
+    <div id="user-analytics-modal" class="modal-overlay" style="display:none; opacity:0;">
+        <div class="modal-content glass-card" style="transform:translateY(30px);">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:15px; margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <div style="background:var(--primary-light); color:var(--primary); width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700;">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div>
+                        <h2 id="modal-user-name" style="font-family:var(--font-heading); font-size:20px; font-weight:700;">Name</h2>
+                        <span id="modal-user-spec" class="badge" style="margin-top:4px;">Specialization</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="padding:8px; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="app.closeUserAnalytics()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div class="grid-two-cols" style="gap:20px;">
+                    <!-- User Statistics -->
+                    <div style="display:flex; flex-direction:column; gap:16px;">
+                        <h3 style="font-family:var(--font-heading); font-size:16px; font-weight:600;">Monthly Statistics</h3>
+                        <div class="stat-boxes" style="display:flex; flex-direction:column; gap:12px;">
+                            <div class="stat-box">
+                                <span>Points Accumulated</span>
+                                <strong id="modal-stat-points">0 pts</strong>
+                            </div>
+                            <div class="stat-box">
+                                <span>Days Active</span>
+                                <strong id="modal-stat-days">0 days</strong>
+                            </div>
+                            <div class="stat-box">
+                                <span>Daily Score Average</span>
+                                <strong id="modal-stat-avg">0 pts</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- KPI Point Weights Polar Chart -->
+                    <div style="display:flex; flex-direction:column;">
+                        <h3 style="font-family:var(--font-heading); font-size:16px; font-weight:600; margin-bottom:10px;">Activity Distribution</h3>
+                        <div class="chart-container" style="height:180px; position:relative;">
+                            <canvas id="modalChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submissions Logs Feed -->
+                <div style="margin-top:24px;">
+                    <h3 style="font-family:var(--font-heading); font-size:16px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-list-check"></i> Recent Log Feed</h3>
+                    <div class="table-responsive" style="max-height: 250px; overflow-y: auto; border:1px solid #e2e8f0; border-radius:10px;">
+                        <table class="kpi-table" style="font-size:13px; width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Daily Score</th>
+                                    <th>Metric Submissions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modal-logs-rows">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Alert toast for notifications -->
+    <div id="toast-notification" class="toast">
+        <span class="toast-icon"></span>
+        <span class="toast-message"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

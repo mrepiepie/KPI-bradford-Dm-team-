@@ -1,0 +1,72 @@
+{
+  "mufeeda": [
+    { "id": 1, "category": "Campaign Execution", "label": "Meta, Google, LinkedIn Ads", "points": 10 },
+    { "id": 2, "category": "SEO Implementation", "label": "Keyword Ranking Improvements", "points": 10 },
+    { "id": 3, "category": "Website Management & Web Designing", "label": "Website Pages Updated / Landing Pages Created", "points": 10 },
+    { "id": 4, "category": "Blog Posting", "label": "Blogs Published & Optimized", "points": 5 },
+    { "id": 5, "category": "Market Research", "label": "Competitor Analysis & Trend Reports", "points": 10 },
+    { "id": 6, "category": "Client Management / POC", "label": "Handle Client Communication & Follow-ups", "points": 5 },
+    { "id": 7, "category": "Sapio Academy / Services / SCUBE / GEO", "label": "Leads Generated & Campaigns Managed", "points": 15 },
+    { "id": 8, "category": "Webinars / Events Support", "label": "Assist in Webinars / Demos", "points": 5 },
+    { "id": 9, "category": "Reporting & Insights", "label": "Weekly Reports & Analysis", "points": 5 },
+    { "id": 10, "category": "Additional", "label": "Extra Tasks Done (Requires Details)", "points": 5 }
+  ],
+  "sakshi": [
+    { "id": 11, "category": "Content Output", "label": "Posts / Blogs / Captions / Email Copywritten", "points": 5 },
+    { "id": 12, "category": "SEO Content", "label": "Keywords & Blog Ranking Achievements", "points": 10 },
+    { "id": 13, "category": "Campaign Support", "label": "Reels / Creatives Collaboration", "points": 5 },
+    { "id": 14, "category": "Trend Adaptation", "label": "Viral / Trending Content Mockups", "points": 5 },
+    { "id": 15, "category": "Timely Delivery", "label": "Projects Completed On Schedule", "points": 5 },
+    { "id": 16, "category": "Social Media Growth", "label": "Engagement & Follower Metric Growth", "points": 15 }
+  ],
+  "anas": [
+    { "id": 21, "category": "Campaign Execution", "label": "Meta, Google, LinkedIn Ads Setup", "points": 10 },
+    { "id": 22, "category": "SEO Implementation", "label": "Organic Search Optimization Work", "points": 10 },
+    { "id": 23, "category": "Website Management & Web Designing", "label": "Pages Added or Custom Landing Pages Design", "points": 10 },
+    { "id": 24, "category": "Blog Posting", "label": "SEO Blogs Published & Interlinked", "points": 5 },
+    { "id": 25, "category": "Market Research", "label": "Ad Intelligence & Keyword Research Reports", "points": 10 },
+    { "id": 26, "category": "Client Management / POC", "label": "Client Onboarding & Update Meetings", "points": 5 },
+    { "id": 27, "category": "Sapio Academy / Services / SCUBE / GEO", "label": "Ad Campaigns Built & Lead Conversions", "points": 15 },
+    { "id": 28, "category": "Webinars / Events Support", "label": "Webinar Tech Support & Coordination", "points": 5 },
+    { "id": 29, "category": "Reporting & Insights", "label": "Google Analytics & ROAS Reports", "points": 5 },
+    { "id": 30, "category": "Creative Support", "label": "Ad Banner Copywriting & Reels Assets", "points": 10 },
+    { "id": 31, "category": "Other", "label": "Adhoc Support Tasks", "points": 5 }
+  ],
+  "minhaj": [
+    { "id": 41, "category": "Campaign Execution", "label": "Performance Campaign Maintenance", "points": 10 },
+    { "id": 42, "category": "SEO Implementation", "label": "Technical SEO Audits & Bugfixes", "points": 10 },
+    { "id": 43, "category": "Website Management & Web Designing", "label": "Site Layout Redesigns & Development", "points": 10 },
+    { "id": 44, "category": "Blog Posting", "label": "Technical Blog Optimizations", "points": 5 },
+    { "id": 45, "category": "Market Research", "label": "Competitor SEO Architecture Reports", "points": 10 },
+    { "id": 46, "category": "Client Management / POC", "label": "Technical Review Calls with Clients", "points": 5 },
+    { "id": 47, "category": "Sapio Academy / Services / SCUBE / GEO", "label": "Lead Funnel Builds & Enhancements", "points": 15 },
+    { "id": 48, "category": "Webinars / Events Support", "label": "Virtual Event Platform Hosting", "points": 5 },
+    { "id": 49, "category": "Reporting & Insights", "label": "Daily/Weekly KPI Dashboard Analytics", "points": 5 },
+    { "id": 50, "category": "Creative Support", "label": "Figma Mockups & Landing Page Graphics", "points": 10 },
+    { "id": 51, "category": "Others", "label": "Miscellaneous Development Tasks", "points": 5 }
+  ],
+  "john": [
+    { "id": 61, "category": "Videos / Reels Produced", "label": "Dynamic Reels & Corporate Videos Produced", "points": 15 },
+    { "id": 62, "category": "Revision", "label": "Creatives Edits based on feedback", "points": 5 },
+    { "id": 63, "category": "Timely Delivery", "label": "Videos Exported & Shared On Time", "points": 5 },
+    { "id": 64, "category": "Campaign Support", "label": "Ad Creative Reel / Video variations", "points": 10 },
+    { "id": 65, "category": "Trend Content", "label": "Social Audits & Viral Style Video adaptations", "points": 5 }
+  ],
+  "absal": [
+    { "id": 71, "category": "Creatives Delivered", "label": "Display Ads, Banners, and Grid Creatives", "points": 10 },
+    { "id": 72, "category": "Variation", "label": "A/B Test Visual Layout Variations", "points": 5 },
+    { "id": 73, "category": "Timely Delivery", "label": "Visual Assets Delivered on Timeline", "points": 5 },
+    { "id": 74, "category": "Campaign Support", "label": "Graphic Assets for Paid Ad Campaigns", "points": 10 },
+    { "id": 75, "category": "Innovation", "label": "New Brand Styleguides & Mockup Designs", "points": 10 },
+    { "id": 76, "category": "Revision", "label": "Graphic Fine-Tuning & Edits", "points": 5 },
+    { "id": 77, "category": "Reel", "label": "Reel Motion Graphics & Cover Assets", "points": 5 }
+  ],
+  "manahil": [
+    { "id": 81, "category": "Creatives Delivered", "label": "Display Ads, Banners, and Grid Creatives", "points": 10 },
+    { "id": 82, "category": "Variation", "label": "A/B Test Visual Layout Variations", "points": 5 },
+    { "id": 83, "category": "Timely Delivery", "label": "Visual Assets Delivered on Timeline", "points": 5 },
+    { "id": 84, "category": "Campaign Support", "label": "Graphic Assets for Paid Ad Campaigns", "points": 10 },
+    { "id": 85, "category": "Innovation", "label": "New Brand Styleguides & Mockup Designs", "points": 10 },
+    { "id": 86, "category": "Revision", "label": "Graphic Fine-Tuning & Edits", "points": 5 }
+  ]
+}
