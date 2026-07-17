@@ -5,36 +5,26 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": [
-          "index.html",
-          "style.css",
-          "app.js",
-          "data/**",
-          "assets/**"
-        ]
+        "includeFiles": ["data/**"]
       }
     }
   ],
   "routes": [
     {
-      "src": "/style.css",
-      "dest": "/style.css"
-    },
-    {
-      "src": "/app.js",
-      "dest": "/app.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
       "src": "/api/(.*)",
       "dest": "/server.js"
     },
     {
+      "src": "/data/(.*)",
+      "status": 403,
+      "statusText": "Forbidden"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/server.js"
+      "dest": "/index.html"
     }
   ]
 }
