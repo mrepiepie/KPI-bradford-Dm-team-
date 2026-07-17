@@ -14,10 +14,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(process.cwd()));
 
-// Resolve data directory — works both locally (__dirname) and on Vercel (process.cwd())
-const DATA_DIR = fs.existsSync(path.join(__dirname, 'data')) 
-    ? path.join(__dirname, 'data') 
-    : path.join(process.cwd(), 'data');
+// Resolve data directory — works both locally and on Vercel
+const DATA_DIR = fs.existsSync(path.join(process.cwd(), 'data'))
+    ? path.join(process.cwd(), 'data')
+    : path.join(__dirname, 'data');
 
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
