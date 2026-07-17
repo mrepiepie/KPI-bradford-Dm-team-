@@ -80,25 +80,25 @@
         <!-- 2. DASHBOARD VIEW -->
         <section id="view-dashboard" class="view">
             <div class="container">
-                <!-- Decoupled Header Layout: Top Left Logo + Right Aligned User Bubble -->
-                <div class="header-container-decoupled" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; margin-top: 15px; padding-left: 20px; padding-right: 20px;">
-                    <!-- Logo in the top-left corner completely outside the bubble -->
-                    <div class="logo-corner" style="margin-left: -20px;">
-                        <img src="assets/logo_white.png" alt="Bradford Logo" style="height: 32px; cursor: pointer; object-fit: contain; display: block;" onclick="app.logout()" title="Click to Logout">
+                <!-- Decoupled Header Layout: Top Left Logo + Right Aligned Expanded User Bubble -->
+                <div class="header-container-decoupled" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; margin-top: 15px; width: 100%;">
+                    <!-- Logo in the far left corner (matching card limits) -->
+                    <div class="logo-corner" style="display: flex; align-items: center;">
+                        <img src="assets/logo_white.png" alt="Bradford Logo" style="height: 38px; cursor: pointer; object-fit: contain;" onclick="app.logout()" title="Click to Logout">
                     </div>
                     
-                    <!-- Clean Floating Bubble Capsule for App Title & User Info -->
-                    <div class="app-header glass-card" style="margin-bottom: 0; padding: 10px 24px; border-radius: 99px; display: flex; align-items: center; gap: 24px;">
-                        <div style="display: flex; align-items: center; gap: 10px; border-right: 1px solid var(--border-color); padding-right: 20px;">
-                            <h1 style="font-size: 16px; font-weight: 600; margin: 0; white-space: nowrap;">Digital Marketing KPI</h1>
-                            <span class="badge" id="user-role-badge" style="font-size: 10px; padding: 2px 6px;">Consultant</span>
+                    <!-- Clean Wide Floating Bubble Capsule for App Title & User Info -->
+                    <div class="app-header glass-card" style="margin-bottom: 0; padding: 12px 32px; border-radius: 99px; display: flex; align-items: center; justify-content: space-between; flex-grow: 1; margin-left: 40px;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <h1 style="font-size: 22px; font-weight: 600; margin: 0; white-space: nowrap; letter-spacing: -0.02em;">Digital Marketing KPI</h1>
+                            <span class="badge" id="user-role-badge" style="font-size: 11px; padding: 3px 8px; font-family: var(--font-mono); font-weight: 700;">Consultant</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 16px;">
-                            <div class="user-info" style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
-                                <i class="fa-regular fa-user-circle"></i>
-                                <span id="user-display-name" style="font-weight: 500;">Loading...</span>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div class="user-info" style="display: flex; align-items: center; gap: 8px; font-size: 15px;">
+                                <i class="fa-regular fa-user-circle" style="font-size: 18px; color: var(--accent-color);"></i>
+                                <span id="user-display-name" style="font-weight: 600;">Loading...</span>
                             </div>
-                            <button class="btn btn-secondary logout-btn" onclick="app.logout()" style="padding: 6px 12px; font-size: 13px;">
+                            <button class="btn btn-secondary logout-btn" onclick="app.logout()" style="padding: 8px 16px; font-size: 13px; font-weight: 600;">
                                 <i class="fa-solid fa-sign-out-alt"></i> <span>Logout</span>
                             </button>
                         </div>
