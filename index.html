@@ -80,29 +80,30 @@
         <!-- 2. DASHBOARD VIEW -->
         <section id="view-dashboard" class="view">
             <div class="container">
-                <!-- Logo outside on top corner -->
-                <div class="logo-top-bar" style="margin-bottom: 20px; display: flex; align-items: center;">
-                    <img src="assets/logo_white.png" alt="Bradford Logo" class="header-logo" onclick="app.logout()" style="cursor:pointer; height: 32px;" title="Click to Logout">
+                <!-- Decoupled Header Layout: Top Left Logo + Right Aligned User Bubble -->
+                <div class="header-container-decoupled" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; margin-top: 10px;">
+                    <!-- Logo in the top-left corner completely outside the bubble -->
+                    <div class="logo-corner">
+                        <img src="assets/logo_white.png" alt="Bradford Logo" style="height: 38px; cursor: pointer; object-fit: contain;" onclick="app.logout()" title="Click to Logout">
+                    </div>
+                    
+                    <!-- Clean Floating Bubble Capsule for App Title & User Info -->
+                    <div class="app-header glass-card" style="margin-bottom: 0; padding: 10px 24px; border-radius: 99px; display: flex; align-items: center; gap: 24px;">
+                        <div style="display: flex; align-items: center; gap: 10px; border-right: 1px solid var(--border-color); padding-right: 20px;">
+                            <h1 style="font-size: 16px; font-weight: 600; margin: 0; white-space: nowrap;">Digital Marketing KPI</h1>
+                            <span class="badge" id="user-role-badge" style="font-size: 10px; padding: 2px 6px;">Consultant</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div class="user-info" style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                                <i class="fa-regular fa-user-circle"></i>
+                                <span id="user-display-name" style="font-weight: 500;">Loading...</span>
+                            </div>
+                            <button class="btn btn-secondary logout-btn" onclick="app.logout()" style="padding: 6px 12px; font-size: 13px;">
+                                <i class="fa-solid fa-sign-out-alt"></i> <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- App Header -->
-                <header class="app-header glass-card">
-                    <div class="header-left">
-                        <div>
-                            <h1 style="font-size: 24px; font-weight: 600;">Digital Marketing KPI</h1>
-                            <span class="badge" id="user-role-badge">Consultant</span>
-                        </div>
-                    </div>
-                    <div class="header-right">
-                        <div class="user-info">
-                            <i class="fa-regular fa-user-circle"></i>
-                            <span id="user-display-name">Loading...</span>
-                        </div>
-                        <button class="btn btn-secondary logout-btn" onclick="app.logout()">
-                            <i class="fa-solid fa-sign-out-alt"></i> <span>Logout</span>
-                        </button>
-                    </div>
-                </header>
 
                 <!-- Dashboard Cards Grid -->
                 <div class="dashboard-grid">
