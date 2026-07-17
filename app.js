@@ -6,9 +6,11 @@
     const originalFetch = window.fetch;
     window.fetch = function(url, options) {
         let finalUrl = url;
+        const host = window.location.hostname;
+        const isLocal = host === 'localhost' || host === '127.0.0.1' || window.location.protocol === 'file:';
         const currentPort = window.location.port;
-        const isFileProtocol = window.location.protocol === 'file:';
-        if (typeof url === 'string' && url.startsWith('/api') && (isFileProtocol || (currentPort && currentPort !== "3000"))) {
+        
+        if (typeof url === 'string' && url.startsWith('/api') && isLocal && currentPort !== "3000") {
             finalUrl = `http://localhost:3000${url}`;
         }
         return originalFetch(finalUrl, options);
