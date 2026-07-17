@@ -1,198 +1,408 @@
 {
   "mufeeda": [
-    { "id": 1, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 2, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 3, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 4, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 5, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 6, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 7, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 8, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 9, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 10, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 11, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 12, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 13, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 14, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 15, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 16, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 17, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 18, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 19, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 20, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 21, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 22, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 23, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 24, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 25, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 26, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "Campaign Execution",
+      "label": "Meta, Google, LinkedIn Ads",
+      "points": 10,
+      "weightage": "10%",
+      "id": 1
+    },
+    {
+      "category": "SEO Implementation",
+      "label": "Keyword Ranking Improvements",
+      "points": 10,
+      "weightage": "10%",
+      "id": 2
+    },
+    {
+      "category": "Website Management & Web Designing",
+      "label": "Website Pages Updated / Landing Pages Created",
+      "points": 10,
+      "weightage": "10%",
+      "id": 3
+    },
+    {
+      "category": "Blog Posting",
+      "label": "Blogs Published & Optimized",
+      "points": 10,
+      "weightage": "10%",
+      "id": 4
+    },
+    {
+      "category": "Market Research",
+      "label": "Competitor Analysis & Trend Reports",
+      "points": 10,
+      "weightage": "10%",
+      "id": 5
+    },
+    {
+      "category": "Client Management / POC",
+      "label": "Handle Client Communication & Follow-ups",
+      "points": 10,
+      "weightage": "10%",
+      "id": 6
+    },
+    {
+      "category": "Sapio Academy / Services / SCUBE / GEO",
+      "label": "Leads Generated & Campaigns Managed",
+      "points": 10,
+      "weightage": "10%",
+      "id": 7
+    },
+    {
+      "category": "Webinars / Events Support",
+      "label": "Assist in Webinars / Demos",
+      "points": 10,
+      "weightage": "10%",
+      "id": 8
+    },
+    {
+      "category": "Reporting & Insights",
+      "label": "Weekly Reports & Analysis",
+      "points": 10,
+      "weightage": "10%",
+      "id": 9
+    },
+    {
+      "category": "Aditional",
+      "label": "Yes",
+      "points": 10,
+      "weightage": "10%",
+      "id": 10
+    }
   ],
   "sakshi": [
-    { "id": 101, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 102, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 103, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 104, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 105, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 106, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 107, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 108, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 109, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 110, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 111, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 112, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 113, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 114, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 115, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 116, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 117, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 118, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 119, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 120, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 121, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 122, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 123, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 124, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 125, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 126, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "Content Output",
+      "label": "Posts / Blogs / Captions / eMAIL",
+      "points": 10,
+      "weightage": "10%",
+      "id": 11
+    },
+    {
+      "category": "SEO Content",
+      "label": "Keywords & Blog Ranking",
+      "points": 10,
+      "weightage": "10%",
+      "id": 12
+    },
+    {
+      "category": "Campaign Support",
+      "label": "Reels / Creatives Collaboration",
+      "points": 10,
+      "weightage": "10%",
+      "id": 13
+    },
+    {
+      "category": "Trend Adaptation",
+      "label": "Viral / Trending Content",
+      "points": 10,
+      "weightage": "10%",
+      "id": 14
+    },
+    {
+      "category": "Timely Delivery",
+      "label": "On schedule",
+      "points": 10,
+      "weightage": "10%",
+      "id": 15
+    },
+    {
+      "category": "Social Media Growth",
+      "label": "Engagement & Follower Growth",
+      "points": 10,
+      "weightage": "10%",
+      "id": 16
+    }
   ],
   "anas": [
-    { "id": 201, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 202, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 203, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 204, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 205, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 206, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 207, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 208, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 209, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 210, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 211, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 212, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 213, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 214, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 215, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 216, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 217, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 218, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 219, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 220, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 221, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 222, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 223, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 224, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 225, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 226, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "Campaign Execution",
+      "label": "Meta, Google, LinkedIn Ads",
+      "points": 10,
+      "weightage": "10%",
+      "id": 17
+    },
+    {
+      "category": "SEO Implementation",
+      "label": "Keyword Ranking Improvements",
+      "points": 10,
+      "weightage": "10%",
+      "id": 18
+    },
+    {
+      "category": "Website Management & Web Designing",
+      "label": "Website Pages Updated / Landing Pages Created",
+      "points": 10,
+      "weightage": "10%",
+      "id": 19
+    },
+    {
+      "category": "Blog Posting",
+      "label": "Blogs Published & Optimized",
+      "points": 10,
+      "weightage": "10%",
+      "id": 20
+    },
+    {
+      "category": "Market Research",
+      "label": "Competitor Analysis & Trend Reports",
+      "points": 10,
+      "weightage": "10%",
+      "id": 21
+    },
+    {
+      "category": "Client Management / POC",
+      "label": "Handle Client Communication & Follow-ups",
+      "points": 10,
+      "weightage": "10%",
+      "id": 22
+    },
+    {
+      "category": "Sapio Academy / Services / SCUBE / GEO",
+      "label": "Leads Generated & Campaigns Managed",
+      "points": 10,
+      "weightage": "10%",
+      "id": 23
+    },
+    {
+      "category": "Webinars / Events Support",
+      "label": "Assist in Webinars / Demos",
+      "points": 10,
+      "weightage": "10%",
+      "id": 24
+    },
+    {
+      "category": "Reporting & Insights",
+      "label": "Weekly Reports & Analysis",
+      "points": 10,
+      "weightage": "10%",
+      "id": 25
+    },
+    {
+      "category": "Creative Support",
+      "label": "Posters / Reels Creation",
+      "points": 10,
+      "weightage": "10%",
+      "id": 26
+    },
+    {
+      "category": "General",
+      "label": "Other",
+      "points": 10,
+      "weightage": "10%",
+      "id": 27
+    }
   ],
   "minhaj": [
-    { "id": 301, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 302, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 303, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 304, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 305, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 306, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 307, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 308, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 309, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 310, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 311, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 312, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 313, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 314, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 315, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 316, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 317, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 318, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 319, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 320, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 321, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 322, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 323, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 324, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 325, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 326, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "Campaign Execution",
+      "label": "Meta, Google, LinkedIn Ads",
+      "points": 10,
+      "weightage": "10%",
+      "id": 28
+    },
+    {
+      "category": "SEO Implementation",
+      "label": "Keyword Ranking Improvements",
+      "points": 10,
+      "weightage": "10%",
+      "id": 29
+    },
+    {
+      "category": "Website Management & Web Designing",
+      "label": "Website Pages Updated / Landing Pages Created",
+      "points": 10,
+      "weightage": "10%",
+      "id": 30
+    },
+    {
+      "category": "Blog Posting",
+      "label": "Blogs Published & Optimized",
+      "points": 10,
+      "weightage": "10%",
+      "id": 31
+    },
+    {
+      "category": "Market Research",
+      "label": "Competitor Analysis & Trend Reports",
+      "points": 10,
+      "weightage": "10%",
+      "id": 32
+    },
+    {
+      "category": "Client Management / POC",
+      "label": "Handle Client Communication & Follow-ups",
+      "points": 10,
+      "weightage": "10%",
+      "id": 33
+    },
+    {
+      "category": "Sapio Academy / Services / SCUBE / GEO",
+      "label": "Leads Generated & Campaigns Managed",
+      "points": 10,
+      "weightage": "10%",
+      "id": 34
+    },
+    {
+      "category": "Webinars / Events Support",
+      "label": "Assist in Webinars / Demos",
+      "points": 10,
+      "weightage": "10%",
+      "id": 35
+    },
+    {
+      "category": "Reporting & Insights",
+      "label": "Weekly Reports & Analysis",
+      "points": 10,
+      "weightage": "10%",
+      "id": 36
+    },
+    {
+      "category": "Creative Support",
+      "label": "Posters / Reels Creation",
+      "points": 10,
+      "weightage": "10%",
+      "id": 37
+    },
+    {
+      "category": "General",
+      "label": "Others",
+      "points": 10,
+      "weightage": "10%",
+      "id": 38
+    }
   ],
   "john": [
-    { "id": 401, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 402, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 403, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 404, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 405, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 406, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 407, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 408, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 409, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 410, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 411, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 412, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 413, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 414, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 415, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 416, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 417, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 418, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 419, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 420, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 421, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 422, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 423, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 424, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 425, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 426, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "General",
+      "label": "Videos / Reels Produced",
+      "points": 10,
+      "weightage": "10%",
+      "id": 39
+    },
+    {
+      "category": "Revision",
+      "label": "Engagement & Creativity",
+      "points": 10,
+      "weightage": "10%",
+      "id": 40
+    },
+    {
+      "category": "Timely Delivery",
+      "label": "On Schedule",
+      "points": 10,
+      "weightage": "10%",
+      "id": 41
+    },
+    {
+      "category": "Campaign Support",
+      "label": "Ads / Social Content",
+      "points": 10,
+      "weightage": "10%",
+      "id": 42
+    },
+    {
+      "category": "Trend Content",
+      "label": "Viral / Trend Adaptation",
+      "points": 10,
+      "weightage": "10%",
+      "id": 43
+    }
   ],
   "absal": [
-    { "id": 501, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 502, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 503, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 504, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 505, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 506, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 507, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 508, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 509, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 510, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 511, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 512, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 513, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 514, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 515, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 516, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 517, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 518, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 519, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 520, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 521, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 522, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 523, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 524, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 525, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 526, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "Creatives Delivered",
+      "label": "Posters / Banners",
+      "points": 10,
+      "weightage": "10%",
+      "id": 44
+    },
+    {
+      "category": "General",
+      "label": "Variation",
+      "points": 10,
+      "weightage": "10%",
+      "id": 45
+    },
+    {
+      "category": "Timely Delivery",
+      "label": "On Schedule",
+      "points": 10,
+      "weightage": "10%",
+      "id": 46
+    },
+    {
+      "category": "Campaign Support",
+      "label": "Ads / Reels",
+      "points": 10,
+      "weightage": "10%",
+      "id": 47
+    },
+    {
+      "category": "Innovation",
+      "label": "New Design Ideas",
+      "points": 10,
+      "weightage": "10%",
+      "id": 48
+    },
+    {
+      "category": "Revision",
+      "label": "Engagement & Creativity",
+      "points": 10,
+      "weightage": "10%",
+      "id": 49
+    },
+    {
+      "category": "General",
+      "label": "Reel",
+      "points": 10,
+      "weightage": "10%",
+      "id": 50
+    }
   ],
   "manahil": [
-    { "id": 601, "category": "SEO (Technical & On-Page)", "label": "Keyword Research & Mapping", "points": 5, "weightage": "20%" },
-    { "id": 602, "category": "SEO (Technical & On-Page)", "label": "On-Page Optimization (Meta Titles, Descriptions, Headers, Internal Linking)", "points": 5, "weightage": "20%" },
-    { "id": 603, "category": "SEO (Technical & On-Page)", "label": "Technical SEO Fixes (Site Speed, Indexing, Schema)", "points": 5, "weightage": "20%" },
-    { "id": 604, "category": "SEO (Technical & On-Page)", "label": "Off-Page / Backlink Strategy", "points": 5, "weightage": "20%" },
-    { "id": 605, "category": "Content Contribution & Blog Management", "label": "Humanised Blog Writing & Publishing", "points": 5, "weightage": "20%" },
-    { "id": 606, "category": "Content Contribution & Blog Management", "label": "Content Idea Briefs for Writers/Designers (Reels & Posts)", "points": 5, "weightage": "20%" },
-    { "id": 607, "category": "Content Contribution & Blog Management", "label": "LinkedIn / Instagram Content Contribution", "points": 5, "weightage": "20%" },
-    { "id": 608, "category": "Content Contribution & Blog Management", "label": "GMB Updates", "points": 5, "weightage": "20%" },
-    { "id": 609, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Setup & Execution", "points": 8, "weightage": "15%" },
-    { "id": 610, "category": "Paid Advertising (Google, Meta, LinkedIn, TikTok, Snapchat)", "label": "Campaign Performance Optimization", "points": 7, "weightage": "15%" },
-    { "id": 611, "category": "Website & Landing Page Management", "label": "WordPress Website Page / Form Creation", "points": 5, "weightage": "15%" },
-    { "id": 612, "category": "Website & Landing Page Management", "label": "Website Revamping", "points": 5, "weightage": "15%" },
-    { "id": 613, "category": "Website & Landing Page Management", "label": "New Website Creation", "points": 5, "weightage": "15%" },
-    { "id": 614, "category": "Market Research & Competitor Analysis", "label": "Competitor Analysis Reports", "points": 5, "weightage": "5%" },
-    { "id": 615, "category": "Client / Stakeholder Management", "label": "Client Communication & POC Handling", "points": 10, "weightage": "10%" },
-    { "id": 616, "category": "Reporting", "label": "SEO Reporting", "points": 2, "weightage": "5%" },
-    { "id": 617, "category": "Reporting", "label": "Website Reporting", "points": 2, "weightage": "5%" },
-    { "id": 618, "category": "Reporting", "label": "GMB Reporting", "points": 1, "weightage": "5%" },
-    { "id": 619, "category": "Video Shooting / Photo Shoot", "label": "Student Photo Shoot", "points": 3, "weightage": "10%" },
-    { "id": 620, "category": "Video Shooting / Photo Shoot", "label": "Testimonial Shoot", "points": 3, "weightage": "10%" },
-    { "id": 621, "category": "Video Shooting / Photo Shoot", "label": "Reel Shoot", "points": 2, "weightage": "10%" },
-    { "id": 622, "category": "Video Shooting / Photo Shoot", "label": "Reel / Posting Editing", "points": 2, "weightage": "10%" },
-    { "id": 623, "category": "Webinar / Event Support & Others", "label": "Webinar/Demo Coordination & Webinar Form Creation", "points": 2, "weightage": "5%" },
-    { "id": 624, "category": "Webinar / Event Support & Others", "label": "Promotional Campaign Support for Events", "points": 1, "weightage": "5%" },
-    { "id": 625, "category": "Webinar / Event Support & Others", "label": "Registration Tracking & Follow-up", "points": 1, "weightage": "5%" },
-    { "id": 626, "category": "Webinar / Event Support & Others", "label": "Merito Lead Update / Others", "points": 1, "weightage": "5%" }
+    {
+      "category": "Creatives Delivered",
+      "label": "Posters / Banners",
+      "points": 10,
+      "weightage": "10%",
+      "id": 51
+    },
+    {
+      "category": "General",
+      "label": "Variation",
+      "points": 10,
+      "weightage": "10%",
+      "id": 52
+    },
+    {
+      "category": "Timely Delivery",
+      "label": "On Schedule",
+      "points": 10,
+      "weightage": "10%",
+      "id": 53
+    },
+    {
+      "category": "Campaign Support",
+      "label": "Ads / Reels",
+      "points": 10,
+      "weightage": "10%",
+      "id": 54
+    },
+    {
+      "category": "Innovation",
+      "label": "New Design Ideas",
+      "points": 10,
+      "weightage": "10%",
+      "id": 55
+    },
+    {
+      "category": "Revision",
+      "label": "Engagement & Creativity",
+      "points": 10,
+      "weightage": "10%",
+      "id": 56
+    }
   ]
 }

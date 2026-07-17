@@ -410,19 +410,21 @@ class KPISystem {
             if (qty > 0) {
                 total += (qty * points);
                 remarkInput.disabled = false;
+                remarkInput.setAttribute("placeholder", "Add required brief description");
                 
                 if (remarkInput.value.trim() === "") {
                     remarkInput.classList.add("remark-required");
-                    remarkInput.placeholder = "Remarks required!";
+                    remarkInput.style.borderColor = "var(--rose)";
                     hasErrors = true;
                 } else {
                     remarkInput.classList.remove("remark-required");
+                    remarkInput.style.borderColor = "";
                 }
             } else {
                 remarkInput.disabled = true;
-                remarkInput.value = "";
                 remarkInput.classList.remove("remark-required");
-                remarkInput.placeholder = "Add required brief description";
+                remarkInput.style.borderColor = "";
+                remarkInput.placeholder = "Description optional (qty is 0)";
             }
         });
 
