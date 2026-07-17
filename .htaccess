@@ -1,0 +1,14 @@
+# Apache Configuration for LiteSpeed / cPanel Node Passenger Deployments
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Check if requested resource is a physical file or folder on the server
+  # If it exists, serve it directly (CSS, JS, images, index.html)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # If request is not a physical file, pass it directly to the Passenger Node application
+  RewriteRule ^(.*)$ app.js [L]
+</IfModule>
