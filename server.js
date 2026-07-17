@@ -625,7 +625,6 @@ app.get('/style.css', (req, res) => {
     res.setHeader('Content-Type', 'text/css');
     res.sendFile(stylePath);
 });
-
 app.get('/app.js', (req, res) => {
     const jsPath = fs.existsSync(path.join(__dirname, 'app.js'))
         ? path.join(__dirname, 'app.js')
@@ -633,6 +632,14 @@ app.get('/app.js', (req, res) => {
     res.setHeader('Content-Type', 'application/javascript');
     res.sendFile(jsPath);
 });
+app.get('/assets/:filename', (req, res) => {
+    const assetsDir = fs.existsSync(path.join(__dirname, 'assets'))
+        ? path.join(__dirname, 'assets')
+        : path.join(process.cwd(), 'assets');
+    const assetPath = path.join(assetsDir, req.params.filename);
+    res.sendFile(assetPath);
+});
+
 
 // Serve frontend single page index.html for all main paths
 app.get('*', (req, res) => {
