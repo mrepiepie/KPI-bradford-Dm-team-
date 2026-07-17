@@ -101,19 +101,6 @@ class KPISystem {
                 duration: 1.2,
                 ease: "power2.out"
             });
-            gsap.to("#bg-video", {
-                x: -xPercent * 20,
-                y: -yPercent * 20,
-                duration: 1.6,
-                ease: "power2.out"
-            });
-            gsap.to(".login-card-unified, .glass-card", {
-                x: xPercent * 6,
-                y: yPercent * 6,
-                duration: 1.6,
-                ease: "power2.out",
-                stagger: 0.01
-            });
         });
     }
 
