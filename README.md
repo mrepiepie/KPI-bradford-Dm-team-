@@ -1,24 +1,56 @@
 # Bradford International Alliance - Digital Marketing KPI System
 
-This is a premium, interactive, and beautifully designed KPI Performance Management Portal template built for the Digital Marketing Team. 
+This is a premium, interactive, and beautifully designed KPI Performance Management Portal built for the Digital Marketing Team.
 
 ## Features
-- **User Personas & Role-Specific KPI Forms**: Forms adapt dynamically based on who logs in (Mufeeda, Sakshi, John, etc. have tailored metrics matching their actual roles from the sheet).
+- **User Personas & Role-Specific KPI Forms**: Dynamic layout rendering. Only specific fields are shown to corresponding consultants based on their field of work.
+- **Date Restriction Safe Locks**: Submissions are secured. Consultants can only select today and up to 2 days prior.
 - **Interactive Leaderboard**: Visualizes consultants' rankings, total scores, and specializations, highlighting the top 3 spots with custom medallions.
-- **Monthly and Daily Reports**: Fully dynamic summaries. The Monthly Report leverages Chart.js for beautiful doughnut chart contribution analysis.
-- **Glassmorphic UI**: Uses standard CSS, HSL colors, modern typography, Outfit & Plus Jakarta Sans google fonts, and GreenSock Animation Platform (GSAP) for micro-animations and smooth view changes.
-- **Local Persistence & Mock Seed**: Prepopulated with 10 days of random activity reports so the leaderboard and summary reports are fully populated upon launch. It saves submissions to browser local storage.
+- **Monthly and Daily Reports**: Fully dynamic summaries. The Monthly Report leverages Chart.js for contribution analysis.
+- **Master Logs**: Admin-exclusive void triggers to modify/delete submissions dynamically.
+- **Excel Ingestion / Export**: Export master audits as spreadsheet rows.
 
-## How to Run
-Since this is a client-side vanilla web template, you can open `index.html` directly in any web browser!
+---
+
+## How to Run Locally (On Any Laptop)
+
+This project runs on Node.js. No complex extensions or software databases are required!
+
+### Step 1: Install Node.js
+If your client does not have Node.js installed, download and install the recommended LTS installer from:
+👉 [https://nodejs.org/](https://nodejs.org/)
+
+### Step 2: Open Command Prompt / Terminal
+Open your terminal (PowerShell, Command Prompt, or Terminal on macOS/Linux) and navigate to the project folder:
+```bash
+cd path/to/KPI-bradford-Dm-team-
+```
+
+### Step 3: Install Dependencies
+Install the required lightweight packages (`express`, `cors`, `jsonwebtoken`, `xlsx`):
+```bash
+npm install
+```
+
+### Step 4: Run the Server
+Start the local server:
+```bash
+npm start
+```
+
+### Step 5: Open in Browser
+Open your browser and navigate to:
+👉 **`http://localhost:3000`**
+
+---
 
 ## Credentials for Testing
 - **Coordinator / Admin**: `maha@bradfordia.org` / `123456`
 - **Consultants (Marketing)**: 
-  - `sakshi@bradfordia.org` / `123456`
   - `mufeeda@bradfordia.org` / `123456`
-  - `john@bradfordia.org` / `123456`
+  - `sakshi@bradfordia.org` / `123456`
   - `anas@bradfordia.org` / `123456`
   - `minhaj@bradfordia.org` / `123456`
+  - `john@bradfordia.org` / `123456`
   - `absal@bradfordia.org` / `123456`
   - `manahil@bradfordia.org` / `123456`
