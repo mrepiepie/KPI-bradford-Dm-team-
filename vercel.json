@@ -5,7 +5,13 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["data/**"]
+        "includeFiles": [
+          "index.html",
+          "style.css",
+          "app.js",
+          "data/**",
+          "assets/**"
+        ]
       }
     }
   ],
@@ -15,16 +21,20 @@
       "dest": "/server.js"
     },
     {
-      "src": "/data/(.*)",
-      "status": 403,
-      "statusText": "Forbidden"
+      "src": "/style.css",
+      "dest": "/server.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/app.js",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/server.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/server.js"
     }
   ]
 }

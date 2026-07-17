@@ -617,11 +617,29 @@ app.post('/api/admin/submissions/bulk', authenticateToken, requireAdmin, (req, r
     });
 });
 
+// Explicitly serve static assets via server routes to bypass Vercel static routing limitations
+app.get('/style.css', (req, res) => {
+    const stylePath = fs.existsSync(path.join(__dirname, 'style.css'))
+        ? path.join(__dirname, 'style.css')
+        : path.join(process.cwd(), 'style.css');
+    res.setHeader('Content-Type', 'text/css');
+    res.sendFile(stylePath);
+});
+
+app.get('/app.js', (req, res) => {
+    const jsPath = fs.existsSync(path.join(__dirname, 'app.js'))
+        ? path.join(__dirname, 'app.js')
+        : path.join(process.cwd(), 'app.js');
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(jsPath);
+});
+
 // Serve frontend single page index.html for all main paths
 app.get('*', (req, res) => {
     const indexPath = fs.existsSync(path.join(__dirname, 'index.html'))
         ? path.join(__dirname, 'index.html')
         : path.join(process.cwd(), 'index.html');
+    res.setHeader('Content-Type', 'text/html');
     res.sendFile(indexPath);
 });
 
