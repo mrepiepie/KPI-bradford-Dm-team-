@@ -80,10 +80,18 @@
         <!-- 2. DASHBOARD VIEW -->
         <section id="view-dashboard" class="view">
             <div class="container">
+                <!-- Logo outside on top corner -->
+                <div class="logo-top-bar" style="margin-bottom: 20px; display: flex; align-items: center;">
+                    <img src="assets/logo_white.png" alt="Bradford Logo" class="header-logo" onclick="app.logout()" style="cursor:pointer; height: 32px;" title="Click to Logout">
+                </div>
+
                 <!-- App Header -->
                 <header class="app-header glass-card">
                     <div class="header-left">
-                        <img src="assets/logo_white.png" alt="Bradford Logo" class="header-logo" onclick="app.logout()" style="cursor:pointer;" title="Click to Logout">
+                        <div>
+                            <h1 style="font-size: 24px; font-weight: 600;">Digital Marketing KPI</h1>
+                            <span class="badge" id="user-role-badge">Consultant</span>
+                        </div>
                     </div>
                     <div class="header-right">
                         <div class="user-info">

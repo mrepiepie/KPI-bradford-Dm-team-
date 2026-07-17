@@ -241,8 +241,7 @@ class KPISystem {
     renderDashboard() {
         if (!this.currentUser) return;
         document.getElementById("user-display-name").innerText = `${this.currentUser.name} (${this.currentUser.role})`;
-        const badgeEl = document.getElementById("user-role-badge");
-        if (badgeEl) badgeEl.innerText = this.currentUser.role;
+        document.getElementById("user-role-badge").innerText = this.currentUser.role;
 
         const adminReportsEl = document.getElementById("admin-reports-card");
         if (this.currentUser.role === "Admin") {
