@@ -1106,7 +1106,31 @@ class KPISystem {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>
-                    <input type="text" class="btn btn-secondary text-left config-cell-cat" style="width:100%; border:1px solid #e2e8f0;" value="${item.category}" onchange="app.updateConfigCache(${index}, 'category', this.value)">
+                    <select class="btn btn-secondary text-left config-cell-cat" style="width:100%; border:1px solid #e2e8f0; cursor:pointer;" onchange="app.updateConfigCache(${index}, 'category', this.value)">
+                        <option value="Campaign Execution" ${item.category === "Campaign Execution" ? "selected" : ""}>Campaign Execution</option>
+                        <option value="SEO Implementation" ${item.category === "SEO Implementation" ? "selected" : ""}>SEO Implementation</option>
+                        <option value="Website Management & Web Designing" ${item.category === "Website Management & Web Designing" ? "selected" : ""}>Website Management & Web Designing</option>
+                        <option value="Blog Posting" ${item.category === "Blog Posting" ? "selected" : ""}>Blog Posting</option>
+                        <option value="Market Research" ${item.category === "Market Research" ? "selected" : ""}>Market Research</option>
+                        <option value="Client Management / POC" ${item.category === "Client Management / POC" ? "selected" : ""}>Client Management / POC</option>
+                        <option value="Sapio Academy / Services / SCUBE / GEO" ${item.category === "Sapio Academy / Services / SCUBE / GEO" ? "selected" : ""}>Sapio Academy / Services / SCUBE / GEO</option>
+                        <option value="Webinars / Events Support" ${item.category === "Webinars / Events Support" ? "selected" : ""}>Webinars / Events Support</option>
+                        <option value="Reporting & Insights" ${item.category === "Reporting & Insights" ? "selected" : ""}>Reporting & Insights</option>
+                        <option value="Content Output" ${item.category === "Content Output" ? "selected" : ""}>Content Output</option>
+                        <option value="SEO Content" ${item.category === "SEO Content" ? "selected" : ""}>SEO Content</option>
+                        <option value="Campaign Support" ${item.category === "Campaign Support" ? "selected" : ""}>Campaign Support</option>
+                        <option value="Trend Adaptation" ${item.category === "Trend Adaptation" ? "selected" : ""}>Trend Adaptation</option>
+                        <option value="Timely Delivery" ${item.category === "Timely Delivery" ? "selected" : ""}>Timely Delivery</option>
+                        <option value="Social Media Growth" ${item.category === "Social Media Growth" ? "selected" : ""}>Social Media Growth</option>
+                        <option value="Videos / Reels Produced" ${item.category === "Videos / Reels Produced" ? "selected" : ""}>Videos / Reels Produced</option>
+                        <option value="Revision" ${item.category === "Revision" ? "selected" : ""}>Revision</option>
+                        <option value="Trend Content" ${item.category === "Trend Content" ? "selected" : ""}>Trend Content</option>
+                        <option value="Creatives Delivered" ${item.category === "Creatives Delivered" ? "selected" : ""}>Creatives Delivered</option>
+                        <option value="Variation" ${item.category === "Variation" ? "selected" : ""}>Variation</option>
+                        <option value="Innovation" ${item.category === "Innovation" ? "selected" : ""}>Innovation</option>
+                        <option value="Reel" ${item.category === "Reel" ? "selected" : ""}>Reel</option>
+                        <option value="General" ${item.category === "General" ? "selected" : ""}>General</option>
+                    </select>
                 </td>
                 <td>
                     <input type="text" class="btn btn-secondary text-left config-cell-label" style="width:100%; border:1px solid #e2e8f0;" value="${item.label}" onchange="app.updateConfigCache(${index}, 'label', this.value)">
