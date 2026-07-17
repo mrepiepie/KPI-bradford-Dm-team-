@@ -333,16 +333,42 @@ app.post('/api/admin/users', authenticateToken, requireAdmin, (req, res) => {
     };
     writeUsers(users);
 
-    // Initialize default KPI configurations for the new consultant
+    // Initialize default KPI configurations for the new consultant based on selected specialization template
     if (role === 'Consultant') {
         const configs = readConfigs();
         if (!configs[userId] || configs[userId].length === 0) {
-            configs[userId] = [
-                { id: 101, category: "Campaign Execution", label: "Meta, Google, LinkedIn Ads Setup & Optimization", points: 10 },
-                { id: 102, category: "SEO Implementation", label: "Keyword Research & Ranking Improvements", points: 10 },
-                { id: 103, category: "Website Management", label: "Landing Pages Created / Updates Done", points: 10 },
-                { id: 104, category: "Market Research", label: "Competitor Analysis & Digital Audits", points: 10 }
-            ];
+            // Find an existing consultant with the same specialization to copy template metrics
+            let templateItems = null;
+            const existingUsers = readUsers();
+            for (const mail in existingUsers) {
+                if (existingUsers[mail].role === 'Consultant' && existingUsers[mail].specialization === specialization) {
+                    const tempId = existingUsers[mail].id;
+                    if (configs[tempId] && configs[tempId].length > 0) {
+                        templateItems = configs[tempId];
+                        break;
+                    }
+                }
+            }
+
+            if (templateItems) {
+                // Duplicate template metric entries with fresh IDs
+                let templateIdStart = Math.floor(Math.random() * 10000) + 1000;
+                configs[userId] = templateItems.map(item => ({
+                    category: item.category,
+                    label: item.label,
+                    points: item.points || 10,
+                    weightage: item.weightage || "10%",
+                    id: templateIdStart++
+                }));
+            } else {
+                // Fallback default metric template
+                configs[userId] = [
+                    { id: Math.floor(Math.random() * 10000) + 1000, category: "Campaign Execution", label: "Meta, Google, LinkedIn Ads Setup & Optimization", points: 10, weightage: "25%" },
+                    { id: Math.floor(Math.random() * 10000) + 1000, category: "SEO Implementation", label: "Keyword Research & Ranking Improvements", points: 10, weightage: "25%" },
+                    { id: Math.floor(Math.random() * 10000) + 1000, category: "Website Management", label: "Landing Pages Created / Updates Done", points: 10, weightage: "25%" },
+                    { id: Math.floor(Math.random() * 10000) + 1000, category: "Market Research", label: "Competitor Analysis & Digital Audits", points: 10, weightage: "25%" }
+                ];
+            }
             writeConfigs(configs);
         }
     }
