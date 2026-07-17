@@ -14,14 +14,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(process.cwd()));
 
-// Resolve data directory — works both locally and on Vercel
-const DATA_DIR = fs.existsSync(path.join(process.cwd(), 'data'))
-    ? path.join(process.cwd(), 'data')
-    : path.join(__dirname, 'data');
-
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
-const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
-const CONFIGS_FILE = path.join(DATA_DIR, 'kpi_configs.json');
+// Resolve data directory relative to project root
+const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
+const SUBMISSIONS_FILE = path.join(process.cwd(), 'data', 'submissions.json');
+const CONFIGS_FILE = path.join(process.cwd(), 'data', 'kpi_configs.json');
 
 // ----------------------------------------------------------------
 // In-memory data store — loaded once at startup.
