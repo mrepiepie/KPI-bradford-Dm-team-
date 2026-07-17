@@ -1401,7 +1401,7 @@ class KPISystem {
             const categoryPoints = {};
             userSubmissions.forEach(sub => {
                 for (const itemId in sub.items) {
-                    const kpiItem = userKPIs.find(item => item.id == itemId);
+                    const kpiItem = userKPIs.find(item => String(item.id) === String(itemId));
                     const catName = kpiItem ? kpiItem.category : "General";
                     const pts = sub.items[itemId].points || 0;
                     categoryPoints[catName] = (categoryPoints[catName] || 0) + pts;
@@ -1421,7 +1421,7 @@ class KPISystem {
                 userSubmissions.forEach(sub => {
                     let summaryHtml = "";
                     for (const itemId in sub.items) {
-                        const kpiItem = userKPIs.find(item => item.id == itemId);
+                        const kpiItem = userKPIs.find(item => String(item.id) === String(itemId));
                         const label = kpiItem ? kpiItem.label : "Activity";
                         summaryHtml += `• ${label} (Qty: ${sub.items[itemId].qty}) - <em>"${sub.items[itemId].remarks}"</em><br>`;
                     }
