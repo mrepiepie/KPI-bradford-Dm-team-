@@ -304,12 +304,31 @@ class KPISystem {
         // Pull existing daily submission for selected date via API
         let existingSubmission = null;
         const dateInput = document.getElementById("kpi-submission-date");
-        if (dateInput && !dateInput.value) {
-            const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            dateInput.value = `${year}-${month}-${day}`;
+        if (dateInput) {
+            const today = new Date();
+            
+            // Generate ISO date strings in YYYY-MM-DD local format
+            const formatDateLocal = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            const todayStr = formatDateLocal(today);
+            
+            // Calculate 2 days ago date
+            const twoDaysAgo = new Date();
+            twoDaysAgo.setDate(today.getDate() - 2);
+            const twoDaysAgoStr = formatDateLocal(twoDaysAgo);
+            
+            // Enforce constraints in Date UI picker
+            dateInput.setAttribute("max", todayStr);
+            dateInput.setAttribute("min", twoDaysAgoStr);
+            
+            if (!dateInput.value) {
+                dateInput.value = todayStr;
+            }
         }
         const selectedDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
 

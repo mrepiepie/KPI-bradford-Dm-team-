@@ -160,6 +160,22 @@ app.post('/api/kpis/submit', authenticateToken, (req, res) => {
     }
 
     const submitDate = date || new Date().toISOString().split('T')[0];
+    
+    // Server-side verification: Date must be within today and past 2 days
+    const submitTime = new Date(submitDate).getTime();
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const minAllowedTime = new Date(today);
+    minAllowedTime.setDate(today.getDate() - 2);
+    
+    // Set max allowed to end of today
+    const maxAllowedTime = new Date(today);
+    maxAllowedTime.setDate(today.getDate() + 1); 
+
+    if (submitTime < minAllowedTime.getTime() || submitTime >= maxAllowedTime.getTime()) {
+        return res.status(400).json({ error: 'Submissions are restricted to today and up to 2 days prior.' });
+    }
+
     const submissions = readSubmissions();
 
     if (!submissions[submitDate]) {
