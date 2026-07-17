@@ -45,7 +45,7 @@ Open your browser and navigate to:
 ---
 
 ## Credentials for Testing
-- **Coordinator / Admin**: `maha@bradfordia.org` / `123456`
+- **Coordinator / Admin**: `balu@bradfordia.org` / `123456`
 - **Consultants (Marketing)**: 
   - `mufeeda@bradfordia.org` / `123456`
   - `sakshi@bradfordia.org` / `123456`

@@ -1,7 +1,7 @@
 {
-  "maha@bradfordia.org": {
-    "id": "maha",
-    "name": "Maha",
+  "balu@bradfordia.org": {
+    "id": "balu",
+    "name": "Balu",
     "role": "Admin",
     "password": "123456",
     "specialization": "Digital Marketing Coordinator"
