@@ -2,15 +2,16 @@
   "name": "bia-digital-marketing-kpi",
   "version": "1.0.0",
   "description": "KPI Performance Portal for Bradford International Alliance Digital Marketing Team",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node app.js",
+    "dev": "node app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "pdf-parse": "^2.4.5"
+    "pdf-parse": "^2.4.5",
+    "xlsx": "^0.18.5"
   }
 }

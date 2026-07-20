@@ -2,7 +2,7 @@
 PassengerAppRoot "/home/bradford/dmkpi.bradfordia.org"
 PassengerBaseURI "/"
 PassengerAppType node
-PassengerStartupFile server.js
+PassengerStartupFile app.js
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
 
 # Apache Routing Configuration
@@ -16,5 +16,5 @@ PassengerStartupFile server.js
   RewriteRule ^ - [L]
 
   # Pass virtual API routes directly to the Node Passenger application
-  RewriteRule ^(.*)$ server.js [L]
+  RewriteRule ^(.*)$ app.js [L]
 </IfModule>
