@@ -14,10 +14,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(process.cwd()));
 
-// Resolve data directory relative to project root
-const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
-const SUBMISSIONS_FILE = path.join(process.cwd(), 'data', 'submissions.json');
-const CONFIGS_FILE = path.join(process.cwd(), 'data', 'kpi_configs.json');
+// Resolve data directory safely (works both locally, on Vercel, and inside cPanel/Passenger folders)
+const DATA_DIR = fs.existsSync(path.join(__dirname, 'data')) 
+    ? path.join(__dirname, 'data') 
+    : path.join(process.cwd(), 'data');
+
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
+const CONFIGS_FILE = path.join(DATA_DIR, 'kpi_configs.json');
 
 // ----------------------------------------------------------------
 // In-memory data store — loaded once at startup.
@@ -654,30 +658,6 @@ app.post('/api/admin/submissions/bulk', authenticateToken, requireAdmin, (req, r
         errors
     });
 });
-
-// Explicitly serve static assets via server routes to bypass Vercel static routing limitations
-app.get('/style.css', (req, res) => {
-    const stylePath = fs.existsSync(path.join(__dirname, 'style.css'))
-        ? path.join(__dirname, 'style.css')
-        : path.join(process.cwd(), 'style.css');
-    res.setHeader('Content-Type', 'text/css');
-    res.sendFile(stylePath);
-});
-app.get('/app.js', (req, res) => {
-    const jsPath = fs.existsSync(path.join(__dirname, 'app.js'))
-        ? path.join(__dirname, 'app.js')
-        : path.join(process.cwd(), 'app.js');
-    res.setHeader('Content-Type', 'application/javascript');
-    res.sendFile(jsPath);
-});
-app.get('/assets/:filename', (req, res) => {
-    const assetsDir = fs.existsSync(path.join(__dirname, 'assets'))
-        ? path.join(__dirname, 'assets')
-        : path.join(process.cwd(), 'assets');
-    const assetPath = path.join(assetsDir, req.params.filename);
-    res.sendFile(assetPath);
-});
-
 
 // Serve frontend single page index.html for all main paths
 app.get('*', (req, res) => {
