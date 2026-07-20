@@ -10,5 +10,5 @@
   RewriteRule ^ - [L]
 
   # If request is not a physical file, pass it directly to the Passenger Node application
-  RewriteRule ^(.*)$ app.js [L]
+  RewriteRule ^(.*)$ server.js [L]
 </IfModule>
