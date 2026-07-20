@@ -1,14 +1,20 @@
-# Apache Configuration for LiteSpeed / cPanel Node Passenger Deployments
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/bradford/dmkpi.bradfordia.org"
+PassengerBaseURI "/"
+PassengerAppType node
+PassengerStartupFile server.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+
+# Apache Routing Configuration
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   
-  # Check if requested resource is a physical file or folder on the server
-  # If it exists, serve it directly (CSS, JS, images, index.html)
+  # Serve physical files (CSS, JS, images, index.html) directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # If request is not a physical file, pass it directly to the Passenger Node application
+  # Pass virtual API routes directly to the Node Passenger application
   RewriteRule ^(.*)$ server.js [L]
 </IfModule>
