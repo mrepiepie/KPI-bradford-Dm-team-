@@ -839,7 +839,7 @@ class KPISystem {
 
     async loadAdminTrends() {
         try {
-            const response = await fetch('/api/admin/analytics/trends', { headers: this.getHeaders() });
+            const response = await fetch('/api/admin/monthly-trend', { headers: this.getHeaders() });
             const trendData = await response.json();
 
             // Calculate stats widgets values
