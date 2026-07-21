@@ -1,5 +1,4 @@
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
-PassengerAppRoot "/home/bradford/dmkpi.bradfordia.org"
 PassengerBaseURI "/"
 PassengerAppType node
 PassengerStartupFile app.js
