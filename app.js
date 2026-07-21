@@ -3,6 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,67 +11,48 @@ const JWT_SECRET = 'bradford_intl_alliance_secret_key_2026';
 
 app.use(cors());
 app.use(express.json());
-// Serve static files — use both __dirname and process.cwd() for Vercel compatibility
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(process.cwd()));
 
-// Resolve data directory safely (works both locally, on Vercel, and inside cPanel/Passenger folders)
-const DATA_DIR = fs.existsSync(path.join(__dirname, 'data')) 
-    ? path.join(__dirname, 'data') 
-    : path.join(process.cwd(), 'data');
+// Resolve SQLite Database file location
+const DB_PATH = fs.existsSync(path.join(__dirname, 'database.sqlite'))
+    ? path.join(__dirname, 'database.sqlite')
+    : path.join(process.cwd(), 'database.sqlite');
 
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
-const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
-const CONFIGS_FILE = path.join(DATA_DIR, 'kpi_configs.json');
-
-// ----------------------------------------------------------------
-// In-memory data store — loaded once at startup.
-// On Vercel (read-only FS), writes are kept in memory for the
-// lifetime of the serverless function instance. On a local server
-// the files are also written to disk for full persistence.
-// ----------------------------------------------------------------
-let _usersCache = null;
-let _submissionsCache = null;
-let _configsCache = null;
-
-function readUsers() {
-    if (!_usersCache) {
-        _usersCache = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+const db = new sqlite3.Database(DB_PATH, (err) => {
+    if (err) {
+        console.error('Failed to open SQLite database:', err.message);
+    } else {
+        console.log('Connected to SQLite database at:', DB_PATH);
     }
-    return _usersCache;
+});
+
+// Helper wrapper for DB queries (Promises)
+function dbGet(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        db.get(sql, params, (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+        });
+    });
 }
 
-function writeUsers(data) {
-    _usersCache = data;
-    try { fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2), 'utf8'); } catch (e) { /* read-only FS on Vercel */ }
+function dbAll(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        db.all(sql, params, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
 }
 
-function readSubmissions() {
-    if (!_submissionsCache) {
-        try {
-            _submissionsCache = JSON.parse(fs.readFileSync(SUBMISSIONS_FILE, 'utf8'));
-        } catch (e) {
-            _submissionsCache = {};
-        }
-    }
-    return _submissionsCache;
-}
-
-function writeSubmissions(data) {
-    _submissionsCache = data;
-    try { fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify(data, null, 2), 'utf8'); } catch (e) { /* read-only FS on Vercel */ }
-}
-
-function readConfigs() {
-    if (!_configsCache) {
-        _configsCache = JSON.parse(fs.readFileSync(CONFIGS_FILE, 'utf8'));
-    }
-    return _configsCache;
-}
-
-function writeConfigs(data) {
-    _configsCache = data;
-    try { fs.writeFileSync(CONFIGS_FILE, JSON.stringify(data, null, 2), 'utf8'); } catch (e) { /* read-only FS on Vercel */ }
+function dbRun(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, function(err) {
+            if (err) reject(err);
+            else resolve({ lastID: this.lastID, changes: this.changes });
+        });
+    });
 }
 
 // Authentication Middleware
@@ -101,62 +83,82 @@ function requireAdmin(req, res, next) {
 // --------------------------------------------------------------------------
 
 // 1. User Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
     
     if (!email || !password) {
         return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const users = readUsers();
-    const user = users[email.toLowerCase()];
+    try {
+        const user = await dbGet('SELECT * FROM users WHERE LOWER(email) = ?', [email.toLowerCase().trim()]);
 
-    if (user && user.password === password) {
-        const payload = {
-            id: user.id,
-            name: user.name,
-            email: email.toLowerCase(),
-            role: user.role,
-            specialization: user.specialization
-        };
+        if (user && user.password === password) {
+            const payload = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                specialization: user.specialization
+            };
 
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
-        res.json({ token, user: payload });
-    } else {
-        res.status(401).json({ error: 'Invalid email or password' });
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
+            res.json({ token, user: payload });
+        } else {
+            res.status(401).json({ error: 'Invalid email or password' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Database query error: ' + err.message });
     }
 });
 
 // 2. Change Password
-app.post('/api/auth/change-password', authenticateToken, (req, res) => {
+app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
     if (!oldPassword || !newPassword) {
         return res.status(400).json({ error: 'Current and new passwords are required' });
     }
 
-    const users = readUsers();
-    const user = users[req.user.email];
+    try {
+        const user = await dbGet('SELECT * FROM users WHERE LOWER(email) = ?', [req.user.email.toLowerCase()]);
 
-    if (!user || user.password !== oldPassword) {
-        return res.status(400).json({ error: 'Current password verification failed' });
+        if (!user || user.password !== oldPassword) {
+            return res.status(400).json({ error: 'Current password verification failed' });
+        }
+
+        await dbRun('UPDATE users SET password = ? WHERE LOWER(email) = ?', [newPassword, req.user.email.toLowerCase()]);
+        res.json({ message: 'Password updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Database update error' });
     }
-
-    user.password = newPassword;
-    users[req.user.email] = user;
-    writeUsers(users);
-
-    res.json({ message: 'Password updated successfully' });
 });
 
 // 3. Get KPI configuration (for form loading)
-app.get('/api/kpis/configs', authenticateToken, (req, res) => {
-    const configs = readConfigs();
-    res.json(configs);
+app.get('/api/kpis/configs', authenticateToken, async (req, res) => {
+    try {
+        const rows = await dbAll('SELECT * FROM kpi_configs');
+        const configs = {};
+
+        rows.forEach(r => {
+            if (!configs[r.user_id]) configs[r.user_id] = [];
+            configs[r.user_id].push({
+                id: r.metric_id,
+                category: r.category,
+                label: r.label,
+                points: r.points,
+                weightage: r.weightage
+            });
+        });
+
+        res.json(configs);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch KPI configs' });
+    }
 });
 
 // 4. Submit Daily KPI
-app.post('/api/kpis/submit', authenticateToken, (req, res) => {
+app.post('/api/kpis/submit', authenticateToken, async (req, res) => {
     const { score, items, date } = req.body;
     
     if (req.user.role === 'Admin') {
@@ -172,7 +174,6 @@ app.post('/api/kpis/submit', authenticateToken, (req, res) => {
     const minAllowedTime = new Date(today);
     minAllowedTime.setDate(today.getDate() - 2);
     
-    // Set max allowed to end of today
     const maxAllowedTime = new Date(today);
     maxAllowedTime.setDate(today.getDate() + 1); 
 
@@ -180,483 +181,489 @@ app.post('/api/kpis/submit', authenticateToken, (req, res) => {
         return res.status(400).json({ error: 'Submissions are restricted to today and up to 2 days prior.' });
     }
 
-    const submissions = readSubmissions();
+    try {
+        // Upsert submission header record
+        await dbRun(
+            `INSERT INTO submissions (date, user_id, submitted_by, email, score) 
+             VALUES (?, ?, ?, ?, ?) 
+             ON CONFLICT(date, user_id) DO UPDATE SET score=excluded.score, submitted_by=excluded.submitted_by, email=excluded.email`,
+            [submitDate, req.user.id, req.user.name, req.user.email, score]
+        );
 
-    if (!submissions[submitDate]) {
-        submissions[submitDate] = {};
+        // Clear existing items for that user on that date and re-insert
+        await dbRun('DELETE FROM submission_items WHERE date = ? AND user_id = ?', [submitDate, req.user.id]);
+
+        if (items) {
+            for (const metricId in items) {
+                const item = items[metricId];
+                await dbRun(
+                    `INSERT INTO submission_items (date, user_id, metric_id, qty, points, remarks) VALUES (?, ?, ?, ?, ?, ?)`,
+                    [submitDate, req.user.id, parseInt(metricId, 10), item.qty, item.points, item.remarks || '']
+                );
+            }
+        }
+
+        res.json({ message: 'KPI submitted successfully', score });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to record KPI submission: ' + err.message });
     }
-
-    submissions[submitDate][req.user.id] = {
-        submittedBy: req.user.name,
-        email: req.user.email,
-        score: score,
-        items: items
-    };
-
-    writeSubmissions(submissions);
-    res.json({ message: 'KPI submitted successfully', score });
 });
 
 // 5. Leaderboard View
-app.get('/api/kpis/leaderboard', authenticateToken, (req, res) => {
-    const submissions = readSubmissions();
-    const users = readUsers();
+app.get('/api/kpis/leaderboard', authenticateToken, async (req, res) => {
+    try {
+        const users = await dbAll(`SELECT * FROM users WHERE role != 'Admin'`);
+        const currentMonth = new Date().toISOString().substring(0, 7); // e.g. "2026-07"
 
-    const monthScores = {};
-    
-    Object.keys(users).forEach(email => {
-        const u = users[email];
-        if (u.role !== 'Admin') {
+        const monthScores = {};
+        users.forEach(u => {
             monthScores[u.id] = {
                 id: u.id,
-                email: email,
+                email: u.email,
                 name: u.name,
                 specialization: u.specialization,
                 score: 0
             };
-        }
-    });
+        });
 
-    const currentMonth = new Date().toISOString().substring(0, 7); // e.g. "2026-07"
-    
-    for (const date in submissions) {
-        if (date.startsWith(currentMonth)) {
-            const daySubmissions = submissions[date];
-            for (const userId in daySubmissions) {
-                if (monthScores[userId]) {
-                    monthScores[userId].score += daySubmissions[userId].score;
-                }
+        const subs = await dbAll(`SELECT user_id, SUM(score) as total_score FROM submissions WHERE date LIKE ? GROUP BY user_id`, [`${currentMonth}%`]);
+
+        subs.forEach(s => {
+            if (monthScores[s.user_id]) {
+                monthScores[s.user_id].score = s.total_score || 0;
             }
-        }
-    }
+        });
 
-    const sorted = Object.values(monthScores).sort((a, b) => b.score - a.score);
-    res.json(sorted);
+        const sorted = Object.values(monthScores).sort((a, b) => b.score - a.score);
+        res.json(sorted);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to generate leaderboard' });
+    }
 });
 
 // 6. Daily Report (Admin Only)
-app.get('/api/reports/daily', authenticateToken, (req, res) => {
+app.get('/api/reports/daily', authenticateToken, async (req, res) => {
     const { date } = req.query;
 
     if (!date) {
         return res.status(400).json({ error: 'Date query parameter is required' });
     }
 
-    const submissions = readSubmissions();
-    const dayData = submissions[date] || {};
-    res.json(dayData);
+    try {
+        const subs = await dbAll('SELECT * FROM submissions WHERE date = ?', [date]);
+        const dayData = {};
+
+        for (const sub of subs) {
+            const itemsRows = await dbAll('SELECT * FROM submission_items WHERE date = ? AND user_id = ?', [date, sub.user_id]);
+            const itemsObj = {};
+            itemsRows.forEach(i => {
+                itemsObj[i.metric_id] = {
+                    qty: i.qty,
+                    points: i.points,
+                    remarks: i.remarks
+                };
+            });
+
+            dayData[sub.user_id] = {
+                submittedBy: sub.submitted_by,
+                email: sub.email,
+                score: sub.score,
+                items: itemsObj
+            };
+        }
+
+        res.json(dayData);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to generate daily report' });
+    }
 });
 
 // 7. General Summary Report (Supports All-Time, Monthly, and Daily filters)
-app.get('/api/reports/summary', authenticateToken, (req, res) => {
-    const { mode, value } = req.query; // mode = "all", "month", "day"
+app.get('/api/reports/summary', authenticateToken, async (req, res) => {
+    const { mode, value } = req.query; // mode: 'all', 'month', 'day'; value: e.g., '2026-07' or '2026-07-16'
 
-    const submissions = readSubmissions();
-    const users = readUsers();
-    const summary = {};
+    try {
+        const users = await dbAll(`SELECT * FROM users WHERE role != 'Admin'`);
+        const reportMap = {};
 
-    Object.keys(users).forEach(email => {
-        const u = users[email];
-        if (u.role !== 'Admin') {
-            summary[u.id] = {
+        users.forEach(u => {
+            reportMap[u.id] = {
                 id: u.id,
+                email: u.email,
                 name: u.name,
                 specialization: u.specialization,
                 submissionsCount: 0,
-                score: 0
+                accumulatedPoints: 0
             };
-        }
-    });
+        });
 
-    for (const date in submissions) {
-        let isMatch = false;
-        if (mode === 'all') {
-            isMatch = true;
-        } else if (mode === 'month' && value && date.startsWith(value)) {
-            isMatch = true;
-        } else if (mode === 'day' && value && date === value) {
-            isMatch = true;
+        let query = 'SELECT user_id, COUNT(*) as subs_count, SUM(score) as total_pts FROM submissions';
+        let params = [];
+
+        if (mode === 'month' && value) {
+            query += ' WHERE date LIKE ?';
+            params.push(`${value}%`);
+        } else if (mode === 'day' && value) {
+            query += ' WHERE date = ?';
+            params.push(value);
         }
 
-        if (isMatch) {
-            const dayData = submissions[date];
-            for (const userId in dayData) {
-                if (summary[userId]) {
-                    summary[userId].submissionsCount += 1;
-                    summary[userId].score += dayData[userId].score;
-                }
+        query += ' GROUP BY user_id';
+
+        const rows = await dbAll(query, params);
+
+        rows.forEach(r => {
+            if (reportMap[r.user_id]) {
+                reportMap[r.user_id].submissionsCount = r.subs_count || 0;
+                reportMap[r.user_id].accumulatedPoints = r.total_pts || 0;
             }
-        }
-    }
+        });
 
-    res.json(Object.values(summary));
+        const summaryList = Object.values(reportMap).sort((a, b) => b.accumulatedPoints - a.accumulatedPoints);
+        res.json(summaryList);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch summary report' });
+    }
 });
 
-// --------------------------------------------------------------------------
-// ADMIN ACTION CONTROL PANEL ENDPOINTS
-// --------------------------------------------------------------------------
-
-// 8. Get all system accounts
-app.get('/api/admin/users', authenticateToken, requireAdmin, (req, res) => {
-    const users = readUsers();
-    const userList = Object.keys(users).map(email => ({
-        email: email,
-        id: users[email].id,
-        name: users[email].name,
-        role: users[email].role,
-        specialization: users[email].specialization,
-        password: users[email].password /* Allow admin to retrieve passwords if student forgets */
-    }));
-    res.json(userList);
+// 8. Get team member list (Admin Only)
+app.get('/api/admin/users', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const users = await dbAll(`SELECT email, id, name, role, specialization FROM users`);
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch users' });
+    }
 });
 
 // 9. Add a new team member
-app.post('/api/admin/users', authenticateToken, requireAdmin, (req, res) => {
+app.post('/api/admin/users', authenticateToken, requireAdmin, async (req, res) => {
     const { email, name, role, password, specialization } = req.body;
     
     if (!email || !name || !role || !password || !specialization) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const users = readUsers();
     const cleanEmail = email.toLowerCase().trim();
 
-    if (users[cleanEmail]) {
-        return res.status(400).json({ error: 'A user with this email already exists' });
-    }
+    try {
+        const existing = await dbGet('SELECT email FROM users WHERE LOWER(email) = ?', [cleanEmail]);
+        if (existing) {
+            return res.status(400).json({ error: 'A user with this email already exists' });
+        }
 
-    // Auto-generate ID from name
-    const userId = name.toLowerCase().replace(/\s+/g, '');
+        const userId = name.toLowerCase().replace(/\s+/g, '');
+        await dbRun(
+            'INSERT INTO users (email, id, name, role, password, specialization) VALUES (?, ?, ?, ?, ?, ?)',
+            [cleanEmail, userId, name, role, password, specialization]
+        );
 
-    users[cleanEmail] = {
-        id: userId,
-        name,
-        role,
-        password,
-        specialization
-    };
-    writeUsers(users);
+        // Auto initialize default KPI configurations based on specialization template
+        if (role === 'Consultant') {
+            const templateUser = await dbGet(`SELECT id FROM users WHERE role = 'Consultant' AND specialization = ? AND id != ? LIMIT 1`, [specialization, userId]);
+            let templateItems = [];
 
-    // Initialize default KPI configurations for the new consultant based on selected specialization template
-    if (role === 'Consultant') {
-        const configs = readConfigs();
-        if (!configs[userId] || configs[userId].length === 0) {
-            // Find an existing consultant with the same specialization to copy template metrics
-            let templateItems = null;
-            const existingUsers = readUsers();
-            for (const mail in existingUsers) {
-                if (existingUsers[mail].role === 'Consultant' && existingUsers[mail].specialization === specialization) {
-                    const tempId = existingUsers[mail].id;
-                    if (configs[tempId] && configs[tempId].length > 0) {
-                        templateItems = configs[tempId];
-                        break;
-                    }
-                }
+            if (templateUser) {
+                templateItems = await dbAll('SELECT category, label, points, weightage FROM kpi_configs WHERE user_id = ?', [templateUser.id]);
             }
 
-            if (templateItems) {
-                // Duplicate template metric entries with fresh IDs
-                let templateIdStart = Math.floor(Math.random() * 10000) + 1000;
-                configs[userId] = templateItems.map(item => ({
-                    category: item.category,
-                    label: item.label,
-                    points: item.points || 10,
-                    weightage: item.weightage || "10%",
-                    id: templateIdStart++
-                }));
+            if (templateItems.length > 0) {
+                let idStart = Math.floor(Math.random() * 10000) + 1000;
+                for (const item of templateItems) {
+                    await dbRun(
+                        'INSERT INTO kpi_configs (user_id, metric_id, category, label, points, weightage) VALUES (?, ?, ?, ?, ?, ?)',
+                        [userId, idStart++, item.category, item.label, item.points || 10, item.weightage || '10%']
+                    );
+                }
             } else {
-                // Fallback default metric template
-                configs[userId] = [
+                const defaults = [
                     { id: Math.floor(Math.random() * 10000) + 1000, category: "Campaign Execution", label: "Meta, Google, LinkedIn Ads Setup & Optimization", points: 10, weightage: "25%" },
                     { id: Math.floor(Math.random() * 10000) + 1000, category: "SEO Implementation", label: "Keyword Research & Ranking Improvements", points: 10, weightage: "25%" },
                     { id: Math.floor(Math.random() * 10000) + 1000, category: "Website Management", label: "Landing Pages Created / Updates Done", points: 10, weightage: "25%" },
                     { id: Math.floor(Math.random() * 10000) + 1000, category: "Market Research", label: "Competitor Analysis & Digital Audits", points: 10, weightage: "25%" }
                 ];
+                for (const d of defaults) {
+                    await dbRun(
+                        'INSERT INTO kpi_configs (user_id, metric_id, category, label, points, weightage) VALUES (?, ?, ?, ?, ?, ?)',
+                        [userId, d.id, d.category, d.label, d.points, d.weightage]
+                    );
+                }
             }
-            writeConfigs(configs);
         }
-    }
 
-    res.json({ message: 'User added successfully', user: { email: cleanEmail, name, role } });
+        res.json({ message: 'User added successfully', user: { email: cleanEmail, name, role } });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create user: ' + err.message });
+    }
 });
 
 // 10. Update a team member's account
-app.put('/api/admin/users/:email', authenticateToken, requireAdmin, (req, res) => {
+app.put('/api/admin/users/:email', authenticateToken, requireAdmin, async (req, res) => {
     const { email } = req.params;
     const { name, role, specialization, password } = req.body;
 
-    const users = readUsers();
-    const cleanEmail = email.toLowerCase().trim();
-    const user = users[cleanEmail];
-
-    if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-    }
-
-    user.name = name || user.name;
-    user.role = role || user.role;
-    user.specialization = specialization || user.specialization;
-    if (password) user.password = password;
-
-    users[cleanEmail] = user;
-    writeUsers(users);
-
-    res.json({ message: 'User updated successfully', user });
-});
-
-// 11. Delete a team member's account
-app.delete('/api/admin/users/:email', authenticateToken, requireAdmin, (req, res) => {
-    const { email } = req.params;
-    const users = readUsers();
     const cleanEmail = email.toLowerCase().trim();
 
-    if (!users[cleanEmail]) {
-        return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (cleanEmail === req.user.email) {
-        return res.status(400).json({ error: 'You cannot delete your own administrative account' });
-    }
-
-    const userId = users[cleanEmail].id;
-    delete users[cleanEmail];
-    writeUsers(users);
-
-    // Clean up configs
-    const configs = readConfigs();
-    if (configs[userId]) {
-        delete configs[userId];
-        writeConfigs(configs);
-    }
-
-    res.json({ message: 'User deleted successfully' });
-});
-
-// 12. Update KPI configs weights / items for a specific consultant
-app.post('/api/admin/kpis/configs', authenticateToken, requireAdmin, (req, res) => {
-    const { userId, items } = req.body;
-    
-    if (!userId || !Array.isArray(items)) {
-        return res.status(400).json({ error: 'User ID and items array are required' });
-    }
-
-    const configs = readConfigs();
-    configs[userId] = items;
-    writeConfigs(configs);
-
-    res.json({ message: 'KPI configurations saved successfully' });
-});
-
-// 13. Delete a daily submission
-app.delete('/api/admin/submissions/:date/:userId', authenticateToken, requireAdmin, (req, res) => {
-    const { date, userId } = req.params;
-    const submissions = readSubmissions();
-
-    if (submissions[date] && submissions[date][userId]) {
-        delete submissions[date][userId];
-        if (Object.keys(submissions[date]).length === 0) {
-            delete submissions[date];
+    try {
+        const user = await dbGet('SELECT * FROM users WHERE LOWER(email) = ?', [cleanEmail]);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        writeSubmissions(submissions);
-        return res.json({ message: 'Submission deleted successfully' });
-    }
 
-    res.status(404).json({ error: 'Submission not found' });
+        const newName = name || user.name;
+        const newRole = role || user.role;
+        const newSpec = specialization || user.specialization;
+        const newPass = password || user.password;
+
+        await dbRun(
+            'UPDATE users SET name = ?, role = ?, specialization = ?, password = ? WHERE LOWER(email) = ?',
+            [newName, newRole, newSpec, newPass, cleanEmail]
+        );
+
+        res.json({ message: 'User updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update user' });
+    }
 });
 
-// 14. Trend Analytics API (Day-by-Day points totals)
-app.get('/api/admin/analytics/trends', authenticateToken, requireAdmin, (req, res) => {
-    const submissions = readSubmissions();
-    const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
-    const dailyTotals = {};
+// 11. Save KPI configurations for a consultant (Admin Only)
+app.put('/api/admin/configs/:userId', authenticateToken, requireAdmin, async (req, res) => {
+    const { userId } = req.params;
+    const { configs } = req.body; // array of items
 
-    // Get all dates in submissions for the current month
-    for (const date in submissions) {
-        if (date.startsWith(currentMonth)) {
-            let dayTotal = 0;
-            const dayData = submissions[date];
-            for (const userId in dayData) {
-                dayTotal += dayData[userId].score;
-            }
-            dailyTotals[date] = dayTotal;
-        }
+    if (!Array.isArray(configs)) {
+        return res.status(400).json({ error: 'Configs array is required' });
     }
 
-    // Sort by date key
-    const sortedDates = Object.keys(dailyTotals).sort();
-    const trend = sortedDates.map(date => ({
-        date: date.substring(8, 10) + ' ' + new Date(date).toLocaleString('default', { month: 'short' }), // "16 Jul"
-        score: dailyTotals[date]
-    }));
+    try {
+        await dbRun('DELETE FROM kpi_configs WHERE user_id = ?', [userId]);
 
-    res.json(trend);
+        for (const item of configs) {
+            await dbRun(
+                'INSERT INTO kpi_configs (user_id, metric_id, category, label, points, weightage) VALUES (?, ?, ?, ?, ?, ?)',
+                [userId, item.id || (Math.floor(Math.random() * 10000) + 1000), item.category, item.label, item.points || 10, item.weightage || '']
+            );
+        }
+
+        res.json({ message: 'Configurations saved successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to save configurations: ' + err.message });
+    }
+});
+
+// 12. Void a specific daily submission (Admin Only)
+app.delete('/api/admin/submissions', authenticateToken, requireAdmin, async (req, res) => {
+    const { date, userId } = req.body;
+
+    if (!date || !userId) {
+        return res.status(400).json({ error: 'Date and userId are required' });
+    }
+
+    try {
+        await dbRun('DELETE FROM submission_items WHERE date = ? AND user_id = ?', [date, userId]);
+        await dbRun('DELETE FROM submissions WHERE date = ? AND user_id = ?', [date, userId]);
+        res.json({ message: `Submission for ${userId} on ${date} has been voided.` });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to void submission' });
+    }
+});
+
+// 13. Audit Log - Get all entries for a specific date across all consultants (Admin Only)
+app.get('/api/admin/audit-log', authenticateToken, requireAdmin, async (req, res) => {
+    const { date } = req.query;
+
+    if (!date) {
+        return res.status(400).json({ error: 'Date is required' });
+    }
+
+    try {
+        const rows = await dbAll(`
+            SELECT si.date, si.user_id, si.metric_id, si.qty, si.points, si.remarks, s.submitted_by, s.email, kc.category, kc.label
+            FROM submission_items si
+            JOIN submissions s ON si.date = s.date AND si.user_id = s.user_id
+            LEFT JOIN kpi_configs kc ON si.user_id = kc.user_id AND si.metric_id = kc.metric_id
+            WHERE si.date = ?
+        `, [date]);
+
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch audit logs: ' + err.message });
+    }
+});
+
+// 14. Monthly Performance Trend for Team (Admin Only)
+app.get('/api/admin/monthly-trend', authenticateToken, requireAdmin, async (req, res) => {
+    const currentMonth = new Date().toISOString().substring(0, 7); // e.g. "2026-07"
+
+    try {
+        const rows = await dbAll(`SELECT date, SUM(score) as daily_total FROM submissions WHERE date LIKE ? GROUP BY date ORDER BY date ASC`, [`${currentMonth}%`]);
+
+        const trend = rows.map(r => ({
+            date: r.date.substring(8, 10) + ' ' + new Date(r.date).toLocaleString('default', { month: 'short' }),
+            score: r.daily_total
+        }));
+
+        res.json(trend);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch monthly trend' });
+    }
 });
 
 // 15. Get submissions for a specific consultant (Admin Only, supports filters)
-app.get('/api/admin/users/:userId/submissions', authenticateToken, requireAdmin, (req, res) => {
+app.get('/api/admin/users/:userId/submissions', authenticateToken, requireAdmin, async (req, res) => {
     const { userId } = req.params;
     const { mode, value } = req.query;
-    const submissions = readSubmissions();
-    const userSubmissions = [];
 
-    for (const date in submissions) {
-        let isMatch = false;
-        if (!mode || mode === 'all') {
-            isMatch = true;
-        } else if (mode === 'month' && value && date.startsWith(value)) {
-            isMatch = true;
-        } else if (mode === 'day' && value && date === value) {
-            isMatch = true;
+    try {
+        let query = 'SELECT * FROM submissions WHERE user_id = ?';
+        let params = [userId];
+
+        if (mode === 'month' && value) {
+            query += ' AND date LIKE ?';
+            params.push(`${value}%`);
+        } else if (mode === 'day' && value) {
+            query += ' AND date = ?';
+            params.push(value);
         }
 
-        if (isMatch && submissions[date] && submissions[date][userId]) {
-            userSubmissions.push({
-                date,
-                score: submissions[date][userId].score,
-                items: submissions[date][userId].items
+        query += ' ORDER BY date DESC';
+
+        const subs = await dbAll(query, params);
+        const result = [];
+
+        for (const sub of subs) {
+            const itemsRows = await dbAll('SELECT * FROM submission_items WHERE date = ? AND user_id = ?', [sub.date, userId]);
+            const itemsObj = {};
+            itemsRows.forEach(i => {
+                itemsObj[i.metric_id] = {
+                    qty: i.qty,
+                    points: i.points,
+                    remarks: i.remarks
+                };
+            });
+
+            result.push({
+                date: sub.date,
+                score: sub.score,
+                items: itemsObj
             });
         }
+
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch user submissions' });
     }
-    
-    // Sort chronological descending
-    userSubmissions.sort((a, b) => b.date.localeCompare(a.date));
-    res.json(userSubmissions);
 });
 
 // 15b. Export Submissions Data (Admin Only)
-app.get('/api/admin/submissions/export', authenticateToken, requireAdmin, (req, res) => {
-    const submissions = readSubmissions();
-    const configs = readConfigs();
-    const rows = [];
+app.get('/api/admin/submissions/export', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const rows = await dbAll(`
+            SELECT si.date, s.submitted_by as Name, s.email as Email, COALESCE(kc.label, si.metric_id) as Activity, si.qty as Quantity, si.points as 'Points Earned', si.remarks as Remarks
+            FROM submission_items si
+            JOIN submissions s ON si.date = s.date AND si.user_id = s.user_id
+            LEFT JOIN kpi_configs kc ON si.user_id = kc.user_id AND si.metric_id = kc.metric_id
+            ORDER BY si.date DESC
+        `);
 
-    for (const date in submissions) {
-        const dayData = submissions[date];
-        for (const userId in dayData) {
-            const userSub = dayData[userId];
-            const userConfigs = configs[userId] || [];
-            
-            for (const itemId in userSub.items) {
-                const item = userSub.items[itemId];
-                const configItem = userConfigs.find(c => c.id === itemId);
-                const activityLabel = configItem ? configItem.label : itemId;
-
-                rows.push({
-                    'Date': date,
-                    'Name': userSub.submittedBy,
-                    'Email': userSub.email,
-                    'Activity': activityLabel,
-                    'Quantity': item.qty,
-                    'Points Earned': item.points,
-                    'Remarks': item.remarks
-                });
-            }
-        }
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to export submissions' });
     }
-
-    // Sort chronological descending
-    rows.sort((a, b) => b.Date.localeCompare(a.Date));
-    res.json(rows);
 });
 
 // 16. Bulk Import Submissions via Excel Rows (Admin Only)
-app.post('/api/admin/submissions/bulk', authenticateToken, requireAdmin, (req, res) => {
+app.post('/api/admin/submissions/bulk', authenticateToken, requireAdmin, async (req, res) => {
     const { rows } = req.body;
     if (!Array.isArray(rows)) {
         return res.status(400).json({ error: 'Rows array is required' });
     }
 
-    const users = readUsers();
-    const configs = readConfigs();
-    const submissions = readSubmissions();
     let importedCount = 0;
     let skippedCount = 0;
     const errors = [];
 
-    rows.forEach((row, index) => {
-        const { date, email, activity, qty, remarks } = row;
-        if (!date || !email || !activity) {
-            skippedCount++;
-            errors.push(`Row ${index + 1}: Missing date, email, or activity name`);
-            return;
+    try {
+        const usersList = await dbAll('SELECT * FROM users');
+        const usersByEmail = {};
+        usersList.forEach(u => usersByEmail[u.email.toLowerCase().trim()] = u);
+
+        for (let index = 0; index < rows.length; index++) {
+            const row = rows[index];
+            const { date, email, activity, qty, remarks } = row;
+            if (!date || !email || !activity) {
+                skippedCount++;
+                errors.push(`Row ${index + 1}: Missing date, email, or activity name`);
+                continue;
+            }
+
+            let finalDate = date;
+            if (typeof date === 'number') {
+                const utcDays  = Math.floor(date - 25569);
+                const utcValue = utcDays * 86400;
+                const dateInfo = new Date(utcValue * 1000);
+                const year = dateInfo.getFullYear();
+                const month = String(dateInfo.getMonth() + 1).padStart(2, '0');
+                const day = String(dateInfo.getDate()).padStart(2, '0');
+                finalDate = `${year}-${month}-${day}`;
+            } else {
+                finalDate = String(date).trim();
+            }
+
+            const cleanEmail = email.toLowerCase().trim();
+            const user = usersByEmail[cleanEmail];
+            if (!user) {
+                skippedCount++;
+                errors.push(`Row ${index + 1}: Consultant with email "${email}" not found`);
+                continue;
+            }
+
+            const matchedMetric = await dbGet(`SELECT metric_id, points FROM kpi_configs WHERE user_id = ? AND LOWER(TRIM(label)) = ?`, [user.id, activity.toLowerCase().trim()]);
+            if (!matchedMetric) {
+                skippedCount++;
+                errors.push(`Row ${index + 1}: Activity "${activity}" not configured for ${user.name}`);
+                continue;
+            }
+
+            const parsedQty = parseInt(qty, 10) || 0;
+            if (parsedQty <= 0) {
+                skippedCount++;
+                errors.push(`Row ${index + 1}: Quantity must be greater than zero`);
+                continue;
+            }
+
+            const pointsEarned = parsedQty * matchedMetric.points;
+
+            // Upsert header
+            await dbRun(
+                `INSERT INTO submissions (date, user_id, submitted_by, email, score) 
+                 VALUES (?, ?, ?, ?, 0) 
+                 ON CONFLICT(date, user_id) DO NOTHING`,
+                [finalDate, user.id, user.name, cleanEmail]
+            );
+
+            // Upsert or insert item
+            await dbRun(
+                `INSERT INTO submission_items (date, user_id, metric_id, qty, points, remarks) VALUES (?, ?, ?, ?, ?, ?)`,
+                [finalDate, user.id, matchedMetric.metric_id, parsedQty, pointsEarned, remarks || `Imported historical log for ${activity}`]
+            );
+
+            // Recalculate daily score
+            const sumRow = await dbGet(`SELECT SUM(points) as total FROM submission_items WHERE date = ? AND user_id = ?`, [finalDate, user.id]);
+            await dbRun(`UPDATE submissions SET score = ? WHERE date = ? AND user_id = ?`, [sumRow.total || 0, finalDate, user.id]);
+
+            importedCount++;
         }
 
-        // Handle date string conversion if parsed as serial Excel float/numeric
-        let finalDate = date;
-        if (typeof date === 'number') {
-            const utcDays  = Math.floor(date - 25569);
-            const utcValue = utcDays * 86400;
-            const dateInfo = new Date(utcValue * 1000);
-            const year = dateInfo.getFullYear();
-            const month = String(dateInfo.getMonth() + 1).padStart(2, '0');
-            const day = String(dateInfo.getDate()).padStart(2, '0');
-            finalDate = `${year}-${month}-${day}`;
-        } else {
-            finalDate = String(date).trim();
-        }
-
-        const cleanEmail = email.toLowerCase().trim();
-        const user = users[cleanEmail];
-        if (!user) {
-            skippedCount++;
-            errors.push(`Row ${index + 1}: Consultant with email "${email}" not found`);
-            return;
-        }
-
-        const userConfigs = configs[user.id] || [];
-        const matchedMetric = userConfigs.find(
-            m => m.label.toLowerCase().trim() === activity.toLowerCase().trim()
-        );
-        if (!matchedMetric) {
-            skippedCount++;
-            errors.push(`Row ${index + 1}: Activity "${activity}" not configured for ${user.name}`);
-            return;
-        }
-
-        const parsedQty = parseInt(qty, 10) || 0;
-        if (parsedQty <= 0) {
-            skippedCount++;
-            errors.push(`Row ${index + 1}: Quantity must be greater than zero`);
-            return;
-        }
-
-        // Initialize submission structure
-        if (!submissions[finalDate]) {
-            submissions[finalDate] = {};
-        }
-        if (!submissions[finalDate][user.id]) {
-            submissions[finalDate][user.id] = {
-                submittedBy: user.name,
-                email: cleanEmail,
-                score: 0,
-                items: {}
-            };
-        }
-
-        // Update items
-        const pointsEarned = parsedQty * matchedMetric.points;
-        submissions[finalDate][user.id].items[matchedMetric.id] = {
-            qty: parsedQty,
-            points: pointsEarned,
-            remarks: remarks || `Imported historical log for ${activity}`
-        };
-
-        // Recalculate score for that user on that day
-        let dailyScore = 0;
-        for (const itemKey in submissions[finalDate][user.id].items) {
-            dailyScore += submissions[finalDate][user.id].items[itemKey].points;
-        }
-        submissions[finalDate][user.id].score = dailyScore;
-        importedCount++;
-    });
-
-    writeSubmissions(submissions);
-
-    res.json({
-        message: `Successfully imported ${importedCount} record(s). Skipped ${skippedCount} record(s).`,
-        importedCount,
-        skippedCount,
-        errors
-    });
+        res.json({
+            message: `Successfully imported ${importedCount} record(s). Skipped ${skippedCount} record(s).`,
+            importedCount,
+            skippedCount,
+            errors
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Bulk import failed: ' + err.message });
+    }
 });
 
 app.get('/client.js', (req, res) => {
@@ -676,11 +683,11 @@ app.get('*', (req, res) => {
     res.sendFile(indexPath);
 });
 
-// Export for Vercel serverless — also start locally when run directly
+// Export for server deployment
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`====================================================`);
-        console.log(`Bradford KPI Development Server Live`);
+        console.log(`Bradford KPI Production Server Live on SQLite`);
         console.log(`Local Host: http://localhost:${PORT}`);
         console.log(`====================================================`);
     });
