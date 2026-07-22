@@ -1,19 +1,16 @@
-# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
-PassengerBaseURI "/"
-PassengerAppType node
-PassengerStartupFile app.js
-# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
-
-# Apache Routing Configuration
+# Apache Routing Configuration for phpMyAdmin / PHP deployments
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   
-  # Serve physical files (CSS, JS, images, index.html) directly
+  # Allow physical files (CSS, HTML, JS, images, client.js, api.php) to serve directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Pass virtual API routes directly to the Node Passenger application
-  RewriteRule ^(.*)$ app.js [L]
+  # Redirect virtual API endpoints /api/* to api.php
+  RewriteRule ^api/(.*)$ api.php [QSA,L]
+
+  # Default fallback routes (Single Page Router) to index.html
+  RewriteRule ^(.*)$ index.html [L]
 </IfModule>

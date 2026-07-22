@@ -1,17 +1,14 @@
 // ==========================================================================
 // CLIENT ENGINE WITH ADVANCED ADMIN API INTEGRATION & GSAP ANIMATION CONTROL
 // ==========================================================================
-// Globally wrap fetch to handle alternative ports and file:// protocol
+// Globally wrap fetch to rewrite Node API endpoints to PHP api.php routes
 (function() {
     const originalFetch = window.fetch;
     window.fetch = function(url, options) {
         let finalUrl = url;
-        const host = window.location.hostname;
-        const isLocal = host === 'localhost' || host === '127.0.0.1' || window.location.protocol === 'file:';
-        const currentPort = window.location.port;
-        
-        if (typeof url === 'string' && url.startsWith('/api') && isLocal && currentPort !== "3000") {
-            finalUrl = `http://localhost:3000${url}`;
+        if (typeof url === 'string' && url.startsWith('/api/')) {
+            // Convert /api/auth/login to api.php/api/auth/login
+            finalUrl = '/api.php' + url;
         }
         return originalFetch(finalUrl, options);
     };
