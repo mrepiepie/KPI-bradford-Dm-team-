@@ -378,6 +378,21 @@ app.get('/client.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'client.js'));
 });
 
+// Explicitly route image and video requests from the assets directory to prevent returning index.html
+app.get('/assets/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'assets', filename);
+    if (fs.existsSync(filePath)) {
+        const ext = path.extname(filename).toLowerCase();
+        if (ext === '.png') res.setHeader('Content-Type', 'image/png');
+        else if (ext === '.mp4') res.setHeader('Content-Type', 'video/mp4');
+        else if (ext === '.jpg' || ext === '.jpeg') res.setHeader('Content-Type', 'image/jpeg');
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send('Asset not found');
+    }
+});
+
 app.get('*', (req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.sendFile(path.join(__dirname, 'index.html'));

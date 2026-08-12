@@ -8,7 +8,8 @@
         "includeFiles": [
           "index.html",
           "style.css",
-          "client.js"
+          "client.js",
+          "assets/**"
         ]
       }
     }
@@ -16,6 +17,10 @@
   "routes": [
     {
       "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/assets/(.*)",
       "dest": "/server.js"
     },
     {
