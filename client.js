@@ -1,13 +1,14 @@
 // ==========================================================================
 // CLIENT ENGINE WITH ADVANCED ADMIN API INTEGRATION & GSAP ANIMATION CONTROL
 // ==========================================================================
-// Globally wrap fetch to rewrite Node API endpoints to PHP api.php routes
+// Globally wrap fetch to route correctly between Vercel (Node) and cPanel (PHP)
 (function() {
     const originalFetch = window.fetch;
     window.fetch = function(url, options) {
         let finalUrl = url;
-        if (typeof url === 'string' && url.startsWith('/api/')) {
-            // Convert /api/auth/login to api.php/api/auth/login
+        const isVercel = window.location.hostname.endsWith('vercel.app');
+        if (typeof url === 'string' && url.startsWith('/api/') && !isVercel) {
+            // Convert to PHP routing only on non-Vercel (cPanel/XAMPP) environments
             finalUrl = '/api.php' + url;
         }
         return originalFetch(finalUrl, options);
