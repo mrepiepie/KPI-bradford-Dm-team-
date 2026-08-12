@@ -43,13 +43,13 @@ CREATE TABLE IF NOT EXISTS submission_items (
 INSERT INTO users (email, id, name, role, password, specialization) VALUES
 ('balu@bradfordia.org', 'balu', 'Balu', 'Admin', '123456', 'Digital Marketing Coordinator'),
 ('mufeeda@bradfordia.org', 'mufeeda', 'Mufeeda', 'Consultant', '123456', 'Campaigns & SEO Specialist'),
-('sakshi@bradfordia.org', 'sakshi', 'Sakshi', 'Consultant', '123456', 'Content & Social Media Writer'),
+('sakshi@bradfordia.org', 'sakshi', 'Sakshi', 'Consultant', '123456', 'SEO Content Writer'),
 ('anas@bradfordia.org', 'anas', 'Anas', 'Consultant', '123456', 'SEO & PPC Campaign Manager'),
 ('minhaj@bradfordia.org', 'minhaj', 'Minhaj', 'Consultant', '123456', 'Campaign & Web Analytics Lead'),
-('john@bradfordia.org', 'john', 'John', 'Consultant', '123456', 'Multimedia & Reel Specialist'),
+('john@bradfordia.org', 'john', 'John', 'Consultant', '123456', 'AI Animator & Motion Graphics Animator'),
 ('absal@bradfordia.org', 'absal', 'Absal', 'Consultant', '123456', 'Lead Visual/Banner Designer'),
 ('manahil@bradfordia.org', 'manahil', 'Manahil', 'Consultant', '123456', 'Brand Designer & Visual Artist')
-ON DUPLICATE KEY UPDATE password=VALUES(password);
+ON DUPLICATE KEY UPDATE password=VALUES(password), specialization=VALUES(specialization);
 
 -- Seed default configs
 INSERT INTO kpi_configs (user_id, metric_id, category, label, points, weightage) VALUES
@@ -76,9 +76,13 @@ INSERT INTO kpi_configs (user_id, metric_id, category, label, points, weightage)
 ('minhaj', 47, 'Sapio Academy / Services / SCUBE / GEO', 'Technical Integrations & Web Audits', 15, '40%'),
 ('minhaj', 49, 'Reporting & Insights', 'Daily Analytics Reports & Trend Analysis Logs', 5, '20%'),
 
--- John Configs
-('john', 61, 'Videos / Reels Produced', 'Reels Filmed, Edited & Published', 15, '60%'),
-('john', 64, 'Campaign Support', 'Media Asset Assets Provided & Content Research', 10, '40%'),
+-- John Configs (AI Animator & Motion Graphics Animator)
+-- Separated AI Reels and Video Reels. Added AI Reels subdivisions: Images, Prompts, Videos.
+('john', 61, 'Video Reels', 'Standard/Motion Video Reels Filmed, Edited & Published', 15, '30%'),
+('john', 62, 'AI Reels: Images Created', 'Generative AI Images Rendered (Midjourney/Stable Diffusion)', 5, '20%'),
+('john', 63, 'AI Reels: Prompts Engineered', 'Detailed AI Prompts Written & Optimized', 5, '15%'),
+('john', 64, 'AI Reels: Videos Rendered', 'AI Video Generation (Runway, Sora, Kling) & Final Animation Reels Output', 20, '25%'),
+('john', 65, 'Campaign Support', 'Media Asset Assets Provided & Content Research', 10, '10%'),
 
 -- Absal Configs
 ('absal', 71, 'Creatives Delivered', 'Graphic Banners, Flyers & Ad Creatives Produced', 10, '60%'),
@@ -87,4 +91,4 @@ INSERT INTO kpi_configs (user_id, metric_id, category, label, points, weightage)
 -- Manahil Configs
 ('manahil', 81, 'Creatives Delivered', 'Branding Kit, Visual Assets & Design Mockups', 10, '60%'),
 ('manahil', 84, 'Campaign Support', 'Creative Asset Delivery & Iteration Adjustments', 10, '40%')
-ON DUPLICATE KEY UPDATE points=VALUES(points);
+ON DUPLICATE KEY UPDATE points=VALUES(points), category=VALUES(category), label=VALUES(label), weightage=VALUES(weightage);

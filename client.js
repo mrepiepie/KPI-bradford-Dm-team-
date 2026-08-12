@@ -619,7 +619,7 @@ class KPISystem {
 
                 card.innerHTML = `
                     <div class="report-emp-header">
-                        <h3 style="cursor:pointer;" onclick="app.showUserAnalytics('${submission.userId}', '${submission.submittedBy}', '${userObj.specialization}')">
+                        <h3 style="cursor:pointer;" onclick="app.showUserAnalytics('${userId}', '${submission.submittedBy}', '${userObj.specialization}')">
                             ${submission.submittedBy} <span class="badge">${userObj.specialization}</span>
                         </h3>
                         <span class="total-points">Total Score: ${submission.score} pts</span>
@@ -731,7 +731,7 @@ class KPISystem {
             // Calculate total monthly score to display percentage distributions
             let totalMonthlyScore = 0;
             monthlyData.forEach(emp => {
-                if (emp.score > 0) totalMonthlyScore += emp.score;
+                if (emp.accumulatedPoints > 0) totalMonthlyScore += emp.accumulatedPoints;
             });
 
             monthlyData.forEach(emp => {
@@ -743,14 +743,14 @@ class KPISystem {
                 tr.innerHTML = `
                     <td><strong>${emp.name}</strong></td>
                     <td>${emp.submissionsCount} Active Days</td>
-                    <td class="text-right score" style="color:var(--emerald); font-weight:700;">${emp.score} pts</td>
+                    <td class="text-right score" style="color:var(--emerald); font-weight:700;">${emp.accumulatedPoints} pts</td>
                 `;
                 tbody.appendChild(tr);
 
-                if (emp.score > 0) {
-                    const percent = totalMonthlyScore > 0 ? ((emp.score / totalMonthlyScore) * 100).toFixed(1) : 0;
+                if (emp.accumulatedPoints > 0) {
+                    const percent = totalMonthlyScore > 0 ? ((emp.accumulatedPoints / totalMonthlyScore) * 100).toFixed(1) : 0;
                     chartData.labels.push(`${emp.name} (${percent}%)`);
-                    chartData.datasets[0].data.push(emp.score);
+                    chartData.datasets[0].data.push(emp.accumulatedPoints);
                 }
             });
 
