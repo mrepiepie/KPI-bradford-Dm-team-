@@ -127,11 +127,11 @@ class KPISystem {
                 // Reset scroll position to top instantly
                 window.scrollTo({ top: 0, behavior: 'instant' });
                 
-                // Keep background decorations visible across all views
+                // Display background decorations only on the login screen
                 const videoBg = document.querySelector(".video-bg-container");
                 const bgDecor = document.querySelector(".bg-decoration");
-                if (videoBg) videoBg.style.display = "block";
-                if (bgDecor) bgDecor.style.display = "block";
+                if (videoBg) videoBg.style.display = (viewId === "view-login") ? "block" : "none";
+                if (bgDecor) bgDecor.style.display = (viewId === "view-login") ? "block" : "none";
                 
                 // View render API hooks
                 if (viewId === "view-dashboard") this.renderDashboard();
